@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
     <meta
       name="description"
@@ -26,7 +26,7 @@
       content="Download YouTube videos and audio instantly. No installation, no dependencies, just download and run."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="opengraph-image.png" />
+    <meta property="og:image" content="assets/opengraph-image.png" />
     <meta
       property="og:url"
       content="https://abdelrahman-ahmed-nassar.github.io/QuickTube-Youtube-Downloader/"
@@ -42,7 +42,7 @@
       name="twitter:description"
       content="Download YouTube videos and audio instantly. No installation, no dependencies, just download and run."
     />
-    <meta name="twitter:image" content="opengraph-image.png" />
+    <meta name="twitter:image" content="assets/opengraph-image.png" />
 
     <title>QuickTube - Fast YouTube Video & Audio Downloader</title>
     <style>
@@ -117,6 +117,41 @@
         max-width: 1200px;
         margin: 0 auto;
         padding: 0 20px;
+      }
+
+      .platform-pill {
+        
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6em;
+
+        padding: 0.6em 1.3em;
+        margin: 3em 0;
+
+        font-size: 1.1em;
+        color: #fff;
+
+        /* Glass effect */
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.18),
+          rgba(255, 255, 255, 0.05)
+        );
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+
+        border-radius: 2em;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+
+        box-shadow:
+          0 8px 30px rgba(0, 0, 0, 0.25),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      }
+
+      .platform-icon {
+        width: 24px;
+        height: 24px;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4)) brightness(0) invert(1);
       }
 
       /* Header */
@@ -655,16 +690,19 @@
           >
         </div>
 
-        <div class="platform-badges">
-          <span class="badge"
-            ><img src="assets/microsoft-windows.svg" alt="" /> Windows</span
-          >
-          <span class="badge"
-            ><img src="assets/Apple_logo.svg" alt="" /> macOS</span
-          >
-          <span class="badge"
-            ><img src="assets/terminal-linux.svg" alt="" /> Linux</span
-          >
+        <div class="platform-pill">
+          <img
+            src="assets/microsoft-windows.svg"
+            alt="Windows"
+            class="platform-icon"
+          />
+          <img src="assets/Apple_logo.svg" alt="macOS" class="platform-icon" />
+          <img
+            src="assets/terminal-linux.svg"
+            alt="Linux"
+            class="platform-icon"
+          />
+          <span>Available for Windows, macOS &amp; Linux</span>
         </div>
       </div>
     </section>
