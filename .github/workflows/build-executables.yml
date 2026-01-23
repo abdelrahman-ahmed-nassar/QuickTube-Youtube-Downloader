@@ -97,13 +97,27 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cd dist
+          echo "Contents of dist folder:"
           ls -la
+          echo "Checking for QuickTube.app:"
+          find . -name "*.app" -type d
           if [ -d "QuickTube.app" ]; then
+            echo "Found QuickTube.app, creating zip..."
             zip -r quicktube-macos.zip QuickTube.app
-          else
-            echo "QuickTube.app not found, creating zip with QuickTube executable instead"
+          elif [ -d "QuickTube" ]; then
+            echo "Found QuickTube directory, creating .app bundle manually..."
+            mkdir -p QuickTube.app/Contents/MacOS
+            mv QuickTube/* QuickTube.app/Contents/MacOS/ 2>/dev/null || true
+            zip -r quicktube-macos.zip QuickTube.app
+          elif [ -f "QuickTube" ]; then
+            echo "Found QuickTube executable, zipping directly..."
             zip quicktube-macos.zip QuickTube
+          else
+            echo "ERROR: Cannot find QuickTube output!"
+            ls -R
+            exit 1
           fi
+          ls -lh quicktube-macos.zip
           cd ..
 
       - name: Build executable with ffmpeg (Linux)
