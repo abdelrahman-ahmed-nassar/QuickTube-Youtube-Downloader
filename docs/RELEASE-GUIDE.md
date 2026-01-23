@@ -41,52 +41,60 @@ git push origin v1.0.0
    - **Tag:** Select `v1.0.0` (or create new tag)
    - **Release title:** `Version 1.0.0 - Initial Release`
    - **Description:**
-     ```markdown
+
+     ````markdown
      ## What's New
-     
+
      - YouTube video and playlist downloader
      - MP3 and MP4 format support
      - Quality selection (low, medium, high)
      - Video format conversion (MP4/MKV)
      - QuickTime Player compatible output
      - Real-time progress display
-     
+
      ## Installation
-     
+
      ### Pre-built Executables (No Python Required)
-     
+
      Download the executable for your platform:
+
      - **Windows:** `yt-downloader-windows.exe`
      - **macOS:** `yt-downloader-macos`
      - **Linux:** `yt-downloader-linux`
-     
+
      **Requirements:**
+
      - Only ffmpeg needs to be installed ([ffmpeg.org](https://ffmpeg.org))
-     
+
      ### Python Script
-     
+
      Requires Python 3.6+ and dependencies:
+
      ```sh
      pip install yt-dlp
-     python yt-downloader.py
+     python quicktube.py
      ```
-     
+     ````
+
      ## Usage
-     
+
      ```sh
      # Windows
      yt-downloader-windows.exe
-     
+
      # macOS
      chmod +x yt-downloader-macos
      ./yt-downloader-macos
-     
+
      # Linux
      chmod +x yt-downloader-linux
      ./yt-downloader-linux
      ```
-     
+
      See [README.md](README.md) for full documentation.
+
+     ```
+
      ```
 5. Click "Publish release"
 
@@ -131,6 +139,7 @@ If the executables didn't auto-attach (older workflows):
 ### Download and Test Each Executable
 
 **Windows:**
+
 ```cmd
 # Download yt-downloader-windows.exe
 # Double-click or run in Command Prompt
@@ -138,6 +147,7 @@ yt-downloader-windows.exe
 ```
 
 **macOS:**
+
 ```sh
 # Download yt-downloader-macos
 chmod +x yt-downloader-macos
@@ -145,6 +155,7 @@ chmod +x yt-downloader-macos
 ```
 
 **Linux:**
+
 ```sh
 # Download yt-downloader-linux
 chmod +x yt-downloader-linux
@@ -179,6 +190,7 @@ Follow [Semantic Versioning](https://semver.org/):
 - **v2.0.0** - Breaking changes
 
 Examples:
+
 - Fixed a bug: `v1.0.0` → `v1.0.1`
 - Added playlist support: `v1.0.1` → `v1.1.0`
 - Changed command-line interface: `v1.1.0` → `v2.0.0`

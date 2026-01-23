@@ -32,7 +32,7 @@ yt-dlp/
 ├── LICENSE                          # MIT License (NEW)
 ├── DEPENDENCIES.md                  # Explains what's bundled
 ├── FIRST-RELEASE-CHECKLIST.md       # Release creation guide (NEW)
-├── yt-downloader.py                 # Main script
+├── quicktube.py                 # Main script
 ├── build-executable.py              # Basic build script
 ├── build-with-ffmpeg.py             # Advanced build with ffmpeg bundling
 ├── .github/

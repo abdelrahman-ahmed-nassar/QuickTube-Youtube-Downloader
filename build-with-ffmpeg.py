@@ -109,7 +109,7 @@ def build_with_ffmpeg():
         print(f"✅ Bundling {ffmpeg_binary} with executable")
     
     # Add the main script
-    command.append("yt-downloader.py")
+    command.append("quicktube.py")
     
     # Run PyInstaller
     try:

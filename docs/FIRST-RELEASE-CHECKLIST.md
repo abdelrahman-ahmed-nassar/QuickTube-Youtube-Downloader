@@ -8,7 +8,7 @@ Complete checklist for creating your first official release with bundled executa
 
 ### 1. Code Preparation
 
-- [x] Main script (`yt-downloader.py`) is production-ready
+- [x] Main script (`quicktube.py`) is production-ready
 - [x] Script includes `get_ffmpeg_path()` function for bundled ffmpeg detection
 - [x] All features tested and working
 - [x] README.md updated to focus on executable distribution

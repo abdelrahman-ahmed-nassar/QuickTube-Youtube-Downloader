@@ -27,7 +27,7 @@ The script will:
 pip install pyinstaller
 
 # Build the executable
-pyinstaller --onefile --name yt-downloader --console yt-downloader.py
+pyinstaller --onefile --name yt-downloader --console quicktube.py
 
 # Find the executable in dist/ folder
 ```
@@ -126,13 +126,13 @@ Add an icon to your executable:
 **Windows:**
 
 ```sh
-pyinstaller --onefile --icon=icon.ico --name yt-downloader yt-downloader.py
+pyinstaller --onefile --icon=icon.ico --name yt-downloader quicktube.py
 ```
 
 **macOS:**
 
 ```sh
-pyinstaller --onefile --icon=icon.icns --name yt-downloader yt-downloader.py
+pyinstaller --onefile --icon=icon.icns --name yt-downloader quicktube.py
 ```
 
 ### Reduce File Size
@@ -141,7 +141,7 @@ Use UPX compression (optional):
 
 ```sh
 pip install upx
-pyinstaller --onefile --upx-dir=/path/to/upx --name yt-downloader yt-downloader.py
+pyinstaller --onefile --upx-dir=/path/to/upx --name yt-downloader quicktube.py
 ```
 
 ### Debug Build
@@ -149,7 +149,7 @@ pyinstaller --onefile --upx-dir=/path/to/upx --name yt-downloader yt-downloader.
 If you encounter issues:
 
 ```sh
-pyinstaller --onefile --console --debug all --name yt-downloader yt-downloader.py
+pyinstaller --onefile --console --debug all --name yt-downloader quicktube.py
 ```
 
 ## Testing the Executable

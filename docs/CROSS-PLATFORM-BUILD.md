@@ -77,7 +77,7 @@ Use Docker to build Linux and Windows executables from your Mac.
 docker run --rm -v "$(pwd):/src" python:3.11-slim bash -c "
   cd /src && \
   pip install pyinstaller yt-dlp && \
-  pyinstaller --onefile --name yt-downloader-linux yt-downloader.py
+  pyinstaller --onefile --name yt-downloader-linux quicktube.py
 "
 
 # Output will be in dist/yt-downloader-linux
@@ -90,7 +90,7 @@ docker run --rm -v "$(pwd):/src" python:3.11-slim bash -c "
 docker run --rm -v "$(pwd):/src" tobix/pywine:3.11 bash -c "
   cd /src && \
   pip install pyinstaller yt-dlp && \
-  pyinstaller --onefile --name yt-downloader-windows yt-downloader.py
+  pyinstaller --onefile --name yt-downloader-windows quicktube.py
 "
 
 # Output will be in dist/yt-downloader-windows.exe

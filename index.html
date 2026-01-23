@@ -1,0 +1,1026 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="QuickTube - The fastest way to download YouTube videos and audio. No installation required. Free, open-source, and works on Windows, macOS, and Linux."
+    />
+    <meta
+      name="keywords"
+      content="youtube downloader, video downloader, mp3 converter, youtube to mp3, youtube to mp4, yt-dlp, quicktube"
+    />
+    <meta
+      property="og:title"
+      content="QuickTube - Fast YouTube Video & Audio Downloader"
+    />
+    <meta
+      property="og:description"
+      content="Download YouTube videos and audio instantly. No installation, no dependencies, just download and run."
+    />
+    <meta property="og:type" content="website" />
+    <title>⚡ QuickTube - Fast YouTube Video & Audio Downloader</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-dark: #0a0a0f;
+        --bg-card: #1a1a2e;
+        --bg-card-hover: #252540;
+        --text-primary: #ffffff;
+        --text-secondary: #a8a8b3;
+        --accent-purple: #8b5cf6;
+        --accent-blue: #3b82f6;
+        --accent-cyan: #06b6d4;
+        --gradient: linear-gradient(
+          135deg,
+          #8b5cf6 0%,
+          #3b82f6 50%,
+          #06b6d4 100%
+        );
+        --success: #10b981;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: var(--bg-dark);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* Animated background */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          radial-gradient(
+            circle at 20% 50%,
+            rgba(139, 92, 246, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 80%,
+            rgba(59, 130, 246, 0.1) 0%,
+            transparent 50%
+          );
+        z-index: -1;
+        animation: pulse 15s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header */
+      header {
+        padding: 20px 0;
+        position: sticky;
+        top: 0;
+        background: rgba(10, 10, 15, 0.8);
+        backdrop-filter: blur(10px);
+        z-index: 100;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 28px;
+        font-weight: bold;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+      }
+
+      .nav-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.3s;
+        font-weight: 500;
+      }
+
+      .nav-links a:hover {
+        color: var(--text-primary);
+      }
+
+      /* Hero Section */
+      .hero {
+        padding: 100px 0;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: 64px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1.2;
+      }
+
+      .hero .subtitle {
+        font-size: 24px;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 16px 40px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        border: none;
+      }
+
+      .btn-primary {
+        background: var(--gradient);
+        color: white;
+        box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
+      }
+
+      .btn-secondary {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--accent-purple);
+        background: var(--bg-card-hover);
+      }
+
+      .platform-badges {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+      }
+
+      .badge {
+        padding: 8px 20px;
+        background: var(--bg-card);
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--text-secondary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* How It Works */
+      .section {
+        padding: 80px 0;
+      }
+
+      .section-title {
+        font-size: 48px;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+        margin-top: 40px;
+      }
+
+      .step {
+        text-align: center;
+        padding: 40px;
+        background: var(--bg-card);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s;
+      }
+
+      .step:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-purple);
+      }
+
+      .step-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+      }
+
+      .step-number {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background: var(--gradient);
+        border-radius: 50%;
+        line-height: 40px;
+        font-weight: bold;
+        margin-bottom: 15px;
+      }
+
+      .step h3 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .step p {
+        color: var(--text-secondary);
+        font-size: 16px;
+      }
+
+      /* Features Grid */
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+      }
+
+      .feature {
+        padding: 30px;
+        background: var(--bg-card);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s;
+      }
+
+      .feature:hover {
+        border-color: var(--accent-cyan);
+        background: var(--bg-card-hover);
+      }
+
+      .feature-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+      }
+
+      .feature h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      .feature p {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+
+      /* Terminal Demo */
+      .terminal {
+        background: #1e1e1e;
+        border-radius: 12px;
+        padding: 20px;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        overflow-x: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 800px;
+        margin: 40px auto;
+      }
+
+      .terminal-header {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+
+      .terminal-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .dot-red {
+        background: #ff5f56;
+      }
+      .dot-yellow {
+        background: #ffbd2e;
+      }
+      .dot-green {
+        background: #27c93f;
+      }
+
+      .terminal-line {
+        margin: 8px 0;
+      }
+
+      .terminal-prompt {
+        color: #06b6d4;
+      }
+
+      .terminal-input {
+        color: #ffffff;
+      }
+
+      .terminal-output {
+        color: #10b981;
+      }
+
+      .terminal-success {
+        color: #10b981;
+      }
+
+      /* Why QuickTube */
+      .why-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 40px;
+      }
+
+      .why-item {
+        padding: 20px;
+        background: var(--bg-card);
+        border-radius: 12px;
+        border-left: 4px solid var(--accent-purple);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .why-item::before {
+        content: "✓";
+        font-size: 24px;
+        color: var(--success);
+        font-weight: bold;
+      }
+
+      /* Download Section */
+      .download-section {
+        background: var(--bg-card);
+        border-radius: 24px;
+        padding: 60px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .download-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 40px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .download-btn {
+        padding: 30px 20px;
+        background: var(--bg-dark);
+        border-radius: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        color: var(--text-primary);
+        display: block;
+      }
+
+      .download-btn:hover {
+        border-color: var(--accent-blue);
+        transform: scale(1.05);
+      }
+
+      .download-btn .os-icon {
+        font-size: 48px;
+        margin-bottom: 10px;
+      }
+
+      .download-btn .os-name {
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .download-features {
+        display: flex;
+        gap: 30px;
+        justify-content: center;
+        margin-top: 30px;
+        flex-wrap: wrap;
+      }
+
+      .download-feature {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-secondary);
+      }
+
+      .download-feature::before {
+        content: "✔";
+        color: var(--success);
+        font-weight: bold;
+      }
+
+      /* Developer Section */
+      .dev-section {
+        background: linear-gradient(
+          135deg,
+          rgba(139, 92, 246, 0.1) 0%,
+          rgba(59, 130, 246, 0.1) 100%
+        );
+        border-radius: 24px;
+        padding: 60px;
+        text-align: center;
+        border: 1px solid rgba(139, 92, 246, 0.3);
+      }
+
+      .dev-links {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 30px;
+        flex-wrap: wrap;
+      }
+
+      /* FAQ */
+      .faq-list {
+        max-width: 800px;
+        margin: 40px auto;
+      }
+
+      .faq-item {
+        background: var(--bg-card);
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .faq-item h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+        color: var(--accent-cyan);
+      }
+
+      .faq-item p {
+        color: var(--text-secondary);
+      }
+
+      /* Footer */
+      footer {
+        padding: 60px 0;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 30px;
+        justify-content: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .footer-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-links a:hover {
+        color: var(--accent-purple);
+      }
+
+      .disclaimer {
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin-top: 20px;
+        opacity: 0.7;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 40px;
+        }
+
+        .hero .subtitle {
+          font-size: 18px;
+        }
+
+        .section-title {
+          font-size: 32px;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .download-section,
+        .dev-section {
+          padding: 40px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">⚡ QuickTube</div>
+          <nav>
+            <ul class="nav-links">
+              <li><a href="#features">Features</a></li>
+              <li><a href="#download">Download</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li>
+                <a
+                  href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader"
+                  target="_blank"
+                  >GitHub</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <h1>The Fastest Way to Download<br />YouTube Videos & Audio</h1>
+        <p class="subtitle">
+          No installation. No Python. No dependencies. Just download & run.
+        </p>
+
+        <div class="cta-buttons">
+          <a href="#download" class="btn btn-primary">⬇️ Download for Free</a>
+          <a
+            href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader"
+            target="_blank"
+            class="btn btn-secondary"
+            >⭐ Star on GitHub</a
+          >
+        </div>
+
+        <div class="platform-badges">
+          <span class="badge">🪟 Windows</span>
+          <span class="badge">🍎 macOS</span>
+          <span class="badge">🐧 Linux</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-icon">📥</div>
+            <h3>Download</h3>
+            <p>
+              Get the executable file for your platform. One file, no installer
+              needed.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-icon">🚀</div>
+            <h3>Run It</h3>
+            <p>
+              Double-click or run from terminal. Works instantly, no setup
+              required.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-icon">🎬</div>
+            <h3>Download Videos</h3>
+            <p>
+              Paste any YouTube URL and start downloading. It's that simple.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+      <div class="container">
+        <h2 class="section-title">Powerful Features</h2>
+        <div class="features">
+          <div class="feature">
+            <div class="feature-icon">🎬</div>
+            <h3>MP4 Video Downloads</h3>
+            <p>Download videos in 360p, 720p, or 1080p quality</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">🎵</div>
+            <h3>MP3 Audio Extraction</h3>
+            <p>Extract audio at 50, 128, or 192 kbps bitrate</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">📋</div>
+            <h3>Playlist Support</h3>
+            <p>Download entire playlists or individual videos</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">⚡</div>
+            <h3>No Installation</h3>
+            <p>Single executable file, runs immediately</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">📦</div>
+            <h3>All-in-One Package</h3>
+            <p>Built-in yt-dlp and ffmpeg included</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">🌍</div>
+            <h3>Cross-Platform</h3>
+            <p>Works on Windows, macOS, and Linux</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">📁</div>
+            <h3>Organized Output</h3>
+            <p>Files saved to clean output folder</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">💻</div>
+            <h3>Terminal UI</h3>
+            <p>Clean, intuitive command-line interface</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">🔒</div>
+            <h3>Open Source</h3>
+            <p>MIT licensed, transparent and safe</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Demo -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">See It In Action</h2>
+        <div class="terminal">
+          <div class="terminal-header">
+            <div class="terminal-dot dot-red"></div>
+            <div class="terminal-dot dot-yellow"></div>
+            <div class="terminal-dot dot-green"></div>
+          </div>
+          <div class="terminal-line">
+            <span class="terminal-output"
+              >============================================================</span
+            >
+          </div>
+          <div class="terminal-line">
+            <span class="terminal-output"
+              >⚡ QuickTube - Fast YouTube Downloader ⚡</span
+            >
+          </div>
+          <div class="terminal-line">
+            <span class="terminal-output"
+              >============================================================</span
+            >
+          </div>
+          <div class="terminal-line"></div>
+          <div class="terminal-line">
+            <span class="terminal-prompt">📎 Enter YouTube URL:</span>
+            <span class="terminal-input">
+              https://www.youtube.com/watch?v=dQw4w9WgXcQ</span
+            >
+          </div>
+          <div class="terminal-line">
+            <span class="terminal-prompt">📁 Enter file type (mp3/mp4):</span>
+            <span class="terminal-input"> mp4</span>
+          </div>
+          <div class="terminal-line">
+            <span class="terminal-prompt"
+              >🔊 Enter quality (low/medium/high):</span
+            >
+            <span class="terminal-input"> high</span>
+          </div>
+          <div class="terminal-line"></div>
+          <div class="terminal-line">
+            <span class="terminal-output"
+              >⏳ Downloading MP4 (HIGH quality)...</span
+            >
+          </div>
+          <div class="terminal-line">
+            <span class="terminal-output">[download] 100% of 50.25MiB</span>
+          </div>
+          <div class="terminal-line"></div>
+          <div class="terminal-line">
+            <span class="terminal-success"
+              >🎉 Successfully downloaded MP4: Rick Astley - Never Gonna Give
+              You Up.mp4</span
+            >
+          </div>
+          <div class="terminal-line">
+            <span class="terminal-success"
+              >📁 Saved to: /output/Rick Astley - Never Gonna Give You
+              Up.mp4</span
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why QuickTube -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Why QuickTube?</h2>
+        <div class="why-list">
+          <div class="why-item">
+            <span>Faster than browser-based tools</span>
+          </div>
+          <div class="why-item">
+            <span>Safer than shady websites</span>
+          </div>
+          <div class="why-item">
+            <span>No ads or annoying popups</span>
+          </div>
+          <div class="why-item">
+            <span>No download limits</span>
+          </div>
+          <div class="why-item">
+            <span>Works offline after download</span>
+          </div>
+          <div class="why-item">
+            <span>100% free & open source</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Download Section -->
+    <section class="section" id="download">
+      <div class="container">
+        <div class="download-section">
+          <h2 class="section-title">Download QuickTube</h2>
+          <p style="color: var(--text-secondary); font-size: 18px">
+            Choose your platform and start downloading in seconds
+          </p>
+
+          <div class="download-buttons">
+            <a
+              href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest/download/quicktube-windows.exe"
+              class="download-btn"
+            >
+              <div class="os-icon">🪟</div>
+              <div class="os-name">Windows</div>
+              <div
+                style="
+                  font-size: 14px;
+                  color: var(--text-secondary);
+                  margin-top: 5px;
+                "
+              >
+                quicktube-windows.exe
+              </div>
+            </a>
+            <a
+              href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest/download/quicktube-macos"
+              class="download-btn"
+            >
+              <div class="os-icon">🍎</div>
+              <div class="os-name">macOS</div>
+              <div
+                style="
+                  font-size: 14px;
+                  color: var(--text-secondary);
+                  margin-top: 5px;
+                "
+              >
+                quicktube-macos
+              </div>
+            </a>
+            <a
+              href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest/download/quicktube-linux"
+              class="download-btn"
+            >
+              <div class="os-icon">🐧</div>
+              <div class="os-name">Linux</div>
+              <div
+                style="
+                  font-size: 14px;
+                  color: var(--text-secondary);
+                  margin-top: 5px;
+                "
+              >
+                quicktube-linux
+              </div>
+            </a>
+          </div>
+
+          <div class="download-features">
+            <div class="download-feature">No dependencies</div>
+            <div class="download-feature">MIT License</div>
+            <div class="download-feature">Free & Open Source</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Developer Section -->
+    <section class="section">
+      <div class="container">
+        <div class="dev-section">
+          <h2 class="section-title">For Developers</h2>
+          <p
+            style="
+              color: var(--text-secondary);
+              font-size: 18px;
+              margin-bottom: 20px;
+            "
+          >
+            QuickTube is open source and welcomes contributions
+          </p>
+          <div class="dev-links">
+            <a
+              href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader"
+              target="_blank"
+              class="btn btn-secondary"
+            >
+              📂 View Source on GitHub
+            </a>
+            <a
+              href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/wiki"
+              target="_blank"
+              class="btn btn-secondary"
+            >
+              📖 Documentation
+            </a>
+            <a
+              href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/wiki/Manual-Usage"
+              target="_blank"
+              class="btn btn-secondary"
+            >
+              💻 Run from Source
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>Is QuickTube free?</h3>
+            <p>
+              Yes! QuickTube is 100% free and open source under the MIT license.
+              No hidden costs, no subscriptions.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>Does it require installation?</h3>
+            <p>
+              Nope! QuickTube is a single executable file. Just download and
+              run. No installation, no Python, no dependencies needed.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>Is it safe to use?</h3>
+            <p>
+              Absolutely. QuickTube is open source, so you can review the code
+              yourself. It uses trusted tools like yt-dlp and ffmpeg under the
+              hood.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>Where are downloaded files saved?</h3>
+            <p>
+              All files are saved to an "output" folder in the same directory as
+              the QuickTube executable. Clean and organized.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>Does it support playlists?</h3>
+            <p>
+              Yes! You can download entire YouTube playlists or choose to
+              download individual videos from a playlist.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>What video qualities are available?</h3>
+            <p>
+              You can download videos in 360p (low), 720p (medium), or 1080p
+              (high) quality. For audio, choose from 50kbps, 128kbps, or
+              192kbps.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-links">
+          <a
+            href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader"
+            target="_blank"
+            >GitHub</a
+          >
+          <a
+            href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/wiki"
+            target="_blank"
+            >Documentation</a
+          >
+          <a
+            href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/issues"
+            target="_blank"
+            >Report Issues</a
+          >
+          <a
+            href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/blob/main/LICENSE"
+            target="_blank"
+            >License (MIT)</a
+          >
+        </div>
+
+        <p style="color: var(--text-secondary); margin-top: 20px">
+          Made with ❤️ by
+          <a
+            href="https://github.com/abdelrahman-ahmed-nassar"
+            target="_blank"
+            style="color: var(--accent-purple); text-decoration: none"
+            >Abdelrahman Ahmed Nassar</a
+          >
+        </p>
+
+        <p class="disclaimer">
+          Disclaimer: This tool is for personal use only. Please respect
+          YouTube's Terms of Service and only download content you have
+          permission to download.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Smooth scroll for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

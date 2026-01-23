@@ -21,13 +21,13 @@
 
 ### Windows
 
-1. Download `quicktube-windows.exe` from [Releases](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest)
+1. Download `quicktube-windows.exe` from [Releases](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest/download/quicktube-windows.exe)
 2. Double-click the file to run
 3. _(Optional)_ Move to a permanent location like `C:\Program Files\QuickTube\`
 
 ### macOS
 
-1. Download `quicktube-macos` from [Releases](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest)
+1. Download `quicktube-macos` from [Releases](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest/download/quicktube-macos)
 2. Open Terminal and navigate to your Downloads folder:
    ```sh
    cd ~/Downloads
@@ -41,7 +41,7 @@
 
 ### Linux
 
-1. Download `quicktube-linux` from [Releases](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest)
+1. Download `quicktube-linux` from [Releases](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest/download/quicktube-linux)
 2. Open Terminal and navigate to your Downloads folder:
    ```sh
    cd ~/Downloads
@@ -149,7 +149,7 @@ See the complete manual installation and usage guide: **[Manual Usage Guide](htt
 **Run:**
 
 ```sh
-python3 yt-downloader.py
+python3 quicktube.py
 ```
 
 This method is perfect if you:
