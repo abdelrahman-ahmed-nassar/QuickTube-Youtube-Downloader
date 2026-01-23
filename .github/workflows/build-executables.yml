@@ -91,7 +91,7 @@ jobs:
       - name: Build macOS app bundle
         if: runner.os == 'macOS'
         run: |
-          pyinstaller --onefile --name QuickTube --console --add-binary "ffmpeg:." --add-binary "yt-dlp:." quicktube.py
+          pyinstaller --windowed --name QuickTube --add-binary "ffmpeg:." --add-binary "yt-dlp:." quicktube.py
 
       - name: Package macOS app as zip
         if: runner.os == 'macOS'
