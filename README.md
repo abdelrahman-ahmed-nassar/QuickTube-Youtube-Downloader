@@ -2,14 +2,14 @@
 
 **The fastest way to download YouTube videos and audio - no installation required!**
 
-[![Download Releases](https://img.shields.io/github/v/release/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp?label=Download&style=for-the-badge)](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
+[![Download Releases](https://img.shields.io/github/v/release/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader?label=Download&style=for-the-badge)](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest)
 [![Platform Support](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=for-the-badge)]()
 
 ## 🚀 Quick Start
 
 **Just 3 steps to start downloading:**
 
-1. **[Download the executable](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)** for your platform
+1. **[Download the executable](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest)** for your platform
 2. **Run it** (double-click or run in terminal)
 3. **Paste a YouTube URL** and start downloading!
 
@@ -21,13 +21,13 @@
 
 ### Windows
 
-1. Download `quicktube-windows.exe` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Downloader-using-yt-dlp/releases/latest)
+1. Download `quicktube-windows.exe` from [Releases](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest)
 2. Double-click the file to run
 3. _(Optional)_ Move to a permanent location like `C:\Program Files\QuickTube\`
 
 ### macOS
 
-1. Download `quicktube-macos` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Downloader-using-yt-dlp/releases/latest)
+1. Download `quicktube-macos` from [Releases](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest)
 2. Open Terminal and navigate to your Downloads folder:
    ```sh
    cd ~/Downloads
@@ -41,7 +41,7 @@
 
 ### Linux
 
-1. Download `quicktube-linux` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Downloader-using-yt-dlp/releases/latest)
+1. Download `quicktube-linux` from [Releases](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest)
 2. Open Terminal and navigate to your Downloads folder:
    ```sh
    cd ~/Downloads
@@ -136,7 +136,7 @@ Files are named automatically based on the YouTube video title.
 
 **Don't want to download the executable?** You can run the Python script directly!
 
-See the complete manual installation and usage guide: **[docs/MANUAL_USAGE.md](docs/MANUAL_USAGE.md)**
+See the complete manual installation and usage guide: **[Manual Usage Guide](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/wiki/Manual-Usage)**
 
 **Quick summary:**
 
@@ -158,14 +158,6 @@ This method is perfect if you:
 - Prefer installing dependencies yourself
 - Are familiar with Python development
 - Need to customize the download behavior
-
-### Build Your Own Executable
-
-Want to build the executable yourself? See [docs/BUILD-EXECUTABLE.md](docs/BUILD-EXECUTABLE.md)
-
-### Create Cross-Platform Builds
-
-See [docs/CROSS-PLATFORM-BUILD.md](docs/CROSS-PLATFORM-BUILD.md) for building executables for all platforms
 
 ---
 
@@ -213,10 +205,11 @@ Run in a proper terminal:
 
 ## 📖 Documentation
 
-- **[DEPENDENCIES.md](DEPENDENCIES.md)** - Understanding what's bundled in the executable
-- **[docs/BUILD-EXECUTABLE.md](docs/BUILD-EXECUTABLE.md)** - Build your own executable
-- **[docs/CROSS-PLATFORM-BUILD.md](docs/CROSS-PLATFORM-BUILD.md)** - Create executables for all platforms
-- **[docs/RELEASE-GUIDE.md](docs/RELEASE-GUIDE.md)** - How to create releases (for maintainers)
+- **[Quick Install Guide](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/wiki/Quick-Install)** - Get started in minutes
+- **[Detailed Installation Guide](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/wiki/Detailed-Installation-Guide)** - Comprehensive setup instructions
+- **[Manual Usage Guide](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/wiki/Manual-Usage)** - Running from source
+- **[Dependencies](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/wiki/Dependencies)** - What's bundled in the executable
+- **[Developer Documentation](docs/)** - For contributors (build guides, release process)
 
 ---
 
@@ -224,7 +217,7 @@ Run in a proper terminal:
 
 Contributions are welcome! Feel free to:
 
-- Report bugs via [Issues](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/issues)
+- Report bugs via [Issues](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/issues)
 - Submit feature requests
 - Create pull requests
 
