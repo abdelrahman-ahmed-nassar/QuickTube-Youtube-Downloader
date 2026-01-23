@@ -27,9 +27,12 @@ def convert_video(input_file, target_format):
     if target_format == "mp4":
         command = [
             "ffmpeg", "-y", "-i", input_file,
-            "-vcodec", "libx264", "-acodec", "aac",
+            "-vcodec", "libx264", "-profile:v", "high", "-level", "4.1",
+            "-acodec", "aac", "-strict", "experimental",
             "-b:v", "1000k", "-b:a", "128k",
-            "-preset", "fast", "-crf", "23", "-movflags", "+faststart",
+            "-preset", "fast", "-crf", "23",
+            "-pix_fmt", "yuv420p",
+            "-movflags", "+faststart",
             output_file
         ]
     elif target_format == "mkv":
@@ -80,7 +83,8 @@ def download_media(video_url, file_type, quality, is_playlist):
         resolution = video_quality_map.get(quality, "720")
         command += [
             "-f", f"bv*[height<={resolution}]+ba/best",
-            "--merge-output-format", "mp4"
+            "--merge-output-format", "mp4",
+            "--postprocessor-args", "ffmpeg:-movflags +faststart -vcodec libx264 -acodec aac"
         ]
 
     if not is_playlist:
