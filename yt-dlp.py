@@ -12,13 +12,21 @@ def extract_video_url(playlist_url):
 
 def convert_video(input_file, target_format):
     """Converts the video to the specified format using H.264 for video and AAC for audio."""
+    # Get the current file extension
+    current_ext = os.path.splitext(input_file)[1][1:].lower()
+    
+    # Check if trying to convert to the same format
+    if current_ext == target_format.lower():
+        print(f"⚠️  File is already in {target_format.upper()} format. No conversion needed.")
+        return input_file
+    
     # Use the base name of the downloaded file for the converted output
     base_name = os.path.splitext(os.path.basename(input_file))[0]
-    output_file = os.path.join(os.path.dirname(input_file), f"{base_name}.{target_format}")
+    output_file = os.path.join(os.path.dirname(input_file), f"{base_name}_converted.{target_format}")
 
     if target_format == "mp4":
         command = [
-            "ffmpeg", "-i", input_file,
+            "ffmpeg", "-y", "-i", input_file,
             "-vcodec", "libx264", "-acodec", "aac",
             "-b:v", "1000k", "-b:a", "128k",
             "-preset", "fast", "-crf", "23", "-movflags", "+faststart",
@@ -26,7 +34,7 @@ def convert_video(input_file, target_format):
         ]
     elif target_format == "mkv":
         command = [
-            "ffmpeg", "-i", input_file,
+            "ffmpeg", "-y", "-i", input_file,
             "-c:v", "libx264", "-c:a", "aac",
             "-b:v", "1000k", "-b:a", "128k",
             output_file
@@ -36,13 +44,21 @@ def convert_video(input_file, target_format):
         return None
 
     print(f"🔄 Converting to {target_format.upper()}...")
-    result = subprocess.run(command, capture_output=True, text=True)
-    
-    if result.returncode == 0:
-        print(f"✅ Successfully converted to {target_format.upper()}!")
-        return output_file
-    else:
-        print(f"❌ Conversion failed. Error: {result.stderr[:200]}")
+    try:
+        # Don't capture output so user can see ffmpeg progress
+        result = subprocess.run(command, timeout=300)  # 5 minute timeout
+        
+        if result.returncode == 0:
+            print(f"✅ Successfully converted to {target_format.upper()}!")
+            return output_file
+        else:
+            print(f"❌ Conversion failed.")
+            return None
+    except subprocess.TimeoutExpired:
+        print("❌ Conversion timeout (exceeded 5 minutes).")
+        return None
+    except Exception as e:
+        print(f"❌ Conversion error: {str(e)}")
         return None
 
 def download_media(video_url, file_type, quality, is_playlist):
