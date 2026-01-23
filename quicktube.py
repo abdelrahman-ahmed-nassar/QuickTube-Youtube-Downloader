@@ -105,7 +105,23 @@ def download_media(video_url, file_type, quality, is_playlist):
         base_dir = os.path.dirname(os.path.abspath(__file__))
     
     output_dir = os.path.join(base_dir, "output")
-    os.makedirs(output_dir, exist_ok=True)
+    
+    # Try to create output directory, handle read-only filesystem error
+    try:
+        os.makedirs(output_dir, exist_ok=True)
+    except (OSError, PermissionError) as e:
+        print("\n" + "="*60)
+        print("❌ ERROR: Cannot create output folder in current location")
+        print("="*60)
+        print("\n⚠️  The app is in a read-only location (likely macOS security).")
+        print("\n📋 SOLUTION:")
+        print("   1. Move QuickTube.app to your Documents or Desktop folder")
+        print("   2. Run it from there instead")
+        print("\n💡 Why? macOS puts downloaded apps in a temporary read-only")
+        print("   location for security. Moving the app fixes this.\n")
+        print("="*60 + "\n")
+        input("Press Enter to exit...")
+        sys.exit(1)
 
     audio_quality_map = {"low": "50K", "medium": "128K", "high": "192K"}
     video_quality_map = {"low": "360", "medium": "720", "high": "1080"}
