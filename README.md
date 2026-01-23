@@ -119,7 +119,7 @@ Enter quality (default: medium): high
 All downloads are saved to the `output/` folder:
 
 - **Windows:** `C:\path\to\executable\output\`
-- **macOS:** `/path/to/executable/output/`
+- **macOS:** `output/` folder created next to `QuickTube.app` (e.g., if the app is on Desktop, output folder appears on Desktop)
 - **Linux:** `/path/to/executable/output/`
 
 Files are named automatically based on the YouTube video title.
