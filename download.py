@@ -1,7 +1,6 @@
 import subprocess
 import os
 import re
-import glob
 
 def extract_video_url(playlist_url):
     """Extracts the single video URL from a playlist URL."""
@@ -33,6 +32,7 @@ def convert_video(input_file, target_format):
             "-preset", "fast", "-crf", "23",
             "-pix_fmt", "yuv420p",
             "-movflags", "+faststart",
+            "-loglevel", "error", "-stats",
             output_file
         ]
     elif target_format == "mkv":
@@ -40,6 +40,8 @@ def convert_video(input_file, target_format):
             "ffmpeg", "-y", "-i", input_file,
             "-c:v", "libx264", "-c:a", "aac",
             "-b:v", "1000k", "-b:a", "128k",
+            "-pix_fmt", "yuv420p",
+            "-loglevel", "error", "-stats",
             output_file
         ]
     else:
@@ -74,7 +76,7 @@ def download_media(video_url, file_type, quality, is_playlist):
 
     # Filename template uses YouTube video title and extension
     filename = os.path.join(output_dir, "%(title)s.%(ext)s")
-    command = ["yt-dlp", "-o", filename]
+    command = ["yt-dlp", "-o", filename, "--no-warnings", "--no-check-certificate", "--progress", "--newline"]
 
     if file_type == "mp3":
         bitrate = audio_quality_map.get(quality, "128K")
@@ -84,55 +86,57 @@ def download_media(video_url, file_type, quality, is_playlist):
         command += [
             "-f", f"bv*[height<={resolution}]+ba/best",
             "--merge-output-format", "mp4",
-            "--postprocessor-args", "ffmpeg:-movflags +faststart -vcodec libx264 -acodec aac"
+            "--postprocessor-args", "ffmpeg:-movflags +faststart -vcodec libx264 -acodec aac -pix_fmt yuv420p"
         ]
 
     if not is_playlist:
         command.append("--no-playlist")
 
-    # Use yt-dlp's --print after_move:filepath to capture the output filename
-    command += ["--print", "after_move:filepath"]
+    # Use yt-dlp's --print after_move:filepath to capture the output filename (suppress this output)
     command.append(video_url)
     
     print(f"⏳ Downloading {file_type.upper()} ({quality.upper()} quality)...")
-    result = subprocess.run(command, capture_output=True, text=True)
+    print("=" * 60)
+    
+    # Run command without capturing output to show real-time progress
+    result = subprocess.run(command, capture_output=False, text=True)
+    
+    print("=" * 60)
 
     # Check if download was successful
     if result.returncode != 0:
         print(f"❌ Download failed!")
-        print(f"Error: {result.stderr[:300]}")
         return
 
-    # Conversion step for video files
-    if file_type == "mp4":
-        # Get the actual output filename from yt-dlp's output
-        output_lines = result.stdout.strip().splitlines()
-        mp4_files = [line for line in output_lines if line.lower().endswith(".mp4")]
-        if mp4_files:
-            input_file = mp4_files[-1]  # Use the last .mp4 file printed
-            print(f"✅ Successfully downloaded: {os.path.basename(input_file)}")
-            print(f"📁 Saved to: {input_file}")
-            
-            convert_choice = input("\n🎬 Do you want to convert the file to another format? (yes/no): ").strip().lower()
-            if convert_choice == "yes":
-                target_format = input("Enter target format (mp4/mkv): ").strip().lower()
-                output_file = convert_video(input_file, target_format)
-                if output_file:
-                    print(f"🎉 Conversion complete!")
-                    print(f"📁 Saved to: {output_file}")
-        else:
-            print("❌ No MP4 file found. Conversion skipped.")
+    # Find the downloaded file in the output directory
+    output_files = []
+    for file in os.listdir(output_dir):
+        if file.lower().endswith(f".{file_type}"):
+            output_files.append(os.path.join(output_dir, file))
     
-    elif file_type == "mp3":
-        # Get the actual output filename from yt-dlp's output
-        output_lines = result.stdout.strip().splitlines()
-        mp3_files = [line for line in output_lines if line.lower().endswith(".mp3")]
-        if mp3_files:
-            full_path = mp3_files[-1]
-            print(f"🎉 Successfully downloaded MP3: {os.path.basename(full_path)}")
-            print(f"📁 Saved to: {full_path}")
-        else:
-            print("❌ No MP3 file found.")
+    if not output_files:
+        print(f"❌ No {file_type.upper()} file found.")
+        return
+    
+    # Get the most recently created file
+    output_file = max(output_files, key=os.path.getctime)
+    
+    print(f"🎉 Successfully downloaded {file_type.upper()}: {os.path.basename(output_file)}")
+    print(f"📁 Saved to: {output_file}")
+    
+    # Conversion step for video files only
+    if file_type == "mp4":
+        convert_choice = input("\n🎬 Do you want to convert the file to another format? (yes/no): ").strip().lower()
+        if convert_choice == "yes":
+            while True:
+                target_format = input("Enter target format (mp4/mkv): ").strip().lower()
+                if target_format in ["mp4", "mkv"]:
+                    break
+                print("⚠️  Invalid format! Please enter 'mp4' or 'mkv'.")
+            converted_file = convert_video(output_file, target_format)
+            if converted_file:
+                print(f"🎉 Conversion complete!")
+                print(f"📁 Saved to: {converted_file}")
     
 if __name__ == "__main__":
     print("=" * 60)
@@ -149,13 +153,17 @@ if __name__ == "__main__":
             url = extract_video_url(url)
             is_playlist = False
 
-    file_type = input("📁 Enter file type (mp3/mp4): ").strip().lower()
-    if file_type not in ["mp3", "mp4"]:
-        print("⚠️  Invalid file type! Defaulting to mp4.")
-        file_type = "mp4"
+    while True:
+        file_type = input("📁 Enter file type (mp3/mp4): ").strip().lower()
+        if file_type in ["mp3", "mp4"]:
+            break
+        print("⚠️  Invalid file type! Please enter 'mp3' or 'mp4'.")
 
     print("\n🔊 Choose quality: low, medium, high")
     quality = input("Enter quality (default: medium): ").strip().lower() or "medium"
+    if quality not in ["low", "medium", "high"]:
+        print("⚠️  Invalid quality! Defaulting to medium.")
+        quality = "medium"
 
     print("\n" + "=" * 60)
     download_media(url, file_type, quality, is_playlist)
