@@ -1,4 +1,4 @@
-# Dependency Management for Executables
+# QuickTube - Dependency Management
 
 ## Quick Answer
 

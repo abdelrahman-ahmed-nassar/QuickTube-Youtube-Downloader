@@ -1,6 +1,6 @@
-# 🎵 YouTube Media Downloader
+# ⚡ QuickTube
 
-**Download YouTube videos and audio in seconds - no installation required!**
+**The fastest way to download YouTube videos and audio - no installation required!**
 
 [![Download Releases](https://img.shields.io/github/v/release/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp?label=Download&style=for-the-badge)](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
 [![Platform Support](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=for-the-badge)]()
@@ -21,36 +21,36 @@
 
 ### Windows
 
-1. Download `yt-downloader-windows.exe` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
+1. Download `quicktube-windows.exe` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Downloader-using-yt-dlp/releases/latest)
 2. Double-click the file to run
-3. _(Optional)_ Move to a permanent location like `C:\Program Files\yt-downloader\`
+3. _(Optional)_ Move to a permanent location like `C:\Program Files\QuickTube\`
 
 ### macOS
 
-1. Download `yt-downloader-macos` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
+1. Download `quicktube-macos` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Downloader-using-yt-dlp/releases/latest)
 2. Open Terminal and navigate to your Downloads folder:
    ```sh
    cd ~/Downloads
-   chmod +x yt-downloader-macos
-   ./yt-downloader-macos
+   chmod +x quicktube-macos
+   ./quicktube-macos
    ```
 3. _(Optional)_ Move to `/usr/local/bin/` for system-wide access:
    ```sh
-   sudo mv yt-downloader-macos /usr/local/bin/yt-downloader
+   sudo mv quicktube-macos /usr/local/bin/quicktube
    ```
 
 ### Linux
 
-1. Download `yt-downloader-linux` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
+1. Download `quicktube-linux` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Downloader-using-yt-dlp/releases/latest)
 2. Open Terminal and navigate to your Downloads folder:
    ```sh
    cd ~/Downloads
-   chmod +x yt-downloader-linux
-   ./yt-downloader-linux
+   chmod +x quicktube-linux
+   ./quicktube-linux
    ```
 3. _(Optional)_ Move to `/usr/local/bin/` for system-wide access:
    ```sh
-   sudo mv yt-downloader-linux /usr/local/bin/yt-downloader
+   sudo mv quicktube-linux /usr/local/bin/quicktube
    ```
 
 > **✅ No dependencies required!** Python, yt-dlp, and ffmpeg are all bundled in the executable.
@@ -176,9 +176,9 @@ See [docs/CROSS-PLATFORM-BUILD.md](docs/CROSS-PLATFORM-BUILD.md) for building ex
 This is a Gatekeeper security warning. To bypass:
 
 ```sh
-xattr -cr yt-downloader-macos
-chmod +x yt-downloader-macos
-./yt-downloader-macos
+xattr -cr quicktube-macos
+chmod +x quicktube-macos
+./quicktube-macos
 ```
 
 Or right-click the file and select "Open" from the menu.
@@ -192,7 +192,7 @@ Click "More info" → "Run anyway". This happens because the executable isn't di
 Make the file executable:
 
 ```sh
-chmod +x yt-downloader-linux
+chmod +x quicktube-linux
 ```
 
 ### Slow Downloads or Errors

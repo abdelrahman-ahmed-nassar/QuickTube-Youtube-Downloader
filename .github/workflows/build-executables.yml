@@ -16,14 +16,14 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            output_name: yt-downloader-linux
-            artifact_name: yt-downloader-linux
+            output_name: quicktube-linux
+            artifact_name: quicktube-linux
           - os: windows-latest
-            output_name: yt-downloader-windows.exe
-            artifact_name: yt-downloader-windows.exe
+            output_name: quicktube-windows.exe
+            artifact_name: quicktube-windows.exe
           - os: macos-latest
-            output_name: yt-downloader-macos
-            artifact_name: yt-downloader-macos
+            output_name: quicktube-macos
+            artifact_name: quicktube-macos
 
     steps:
       - name: Checkout code
@@ -67,12 +67,12 @@ jobs:
       - name: Build executable with ffmpeg (Windows)
         if: runner.os == 'Windows'
         run: |
-          pyinstaller --onefile --name yt-downloader-windows --console --add-binary "ffmpeg.exe;." yt-downloader.py
+          pyinstaller --onefile --name quicktube-windows --console --add-binary "ffmpeg.exe;." quicktube.py
 
       - name: Build executable with ffmpeg (Unix)
         if: runner.os != 'Windows'
         run: |
-          pyinstaller --onefile --name ${{ matrix.output_name }} --console --add-binary "ffmpeg:." yt-downloader.py
+          pyinstaller --onefile --name ${{ matrix.output_name }} --console --add-binary "ffmpeg:." quicktube.py
 
       - name: Make executable (Unix)
         if: runner.os != 'Windows'

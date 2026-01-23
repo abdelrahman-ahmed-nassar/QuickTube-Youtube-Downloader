@@ -1,4 +1,4 @@
-# 📥 Installation Guide
+# 📥 QuickTube Installation Guide
 
 **Super simple installation - just download and run!**
 
@@ -8,23 +8,22 @@
 
 ### Step 1: Download
 
-1. Go to the [Releases page](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
-2. Download `yt-downloader-windows.exe`
+1. Go to the [Releases page](https://github.com/abdelrahman-ahmed-nassar/YouTube-Downloader-using-yt-dlp/releases/latest)
+2. Download `quicktube-windows.exe`
 3. Save it to a folder you can find (like `Downloads` or `Desktop`)
 
 ### Step 2: Run
 
-- **Option A (Easy):** Double-click `yt-downloader-windows.exe`
+- **Option A (Easy):** Double-click `quicktube-windows.exe`
 - **Option B (Terminal):**
   1. Press `Win + R` to open Run dialog
   2. Type `cmd` and press Enter
   3. Navigate to where you saved the file:
-     ```cmd
+     ````cmd
      cd C:\Users\YourName\Downloads
-     yt-downloader-windows.exe
-     ```
-
-### Common Windows Issues
+     quicktube-windows.exe
+     ```### Common Windows Issues
+     ````
 
 **"Windows protected your PC" warning:**
 
@@ -34,7 +33,7 @@
 This warning appears because the app isn't digitally signed (costs $$$ for developers). The app is safe - it's open source!
 
 **Want to run from anywhere?**
-Move `yt-downloader-windows.exe` to `C:\Program Files\yt-downloader\` and add it to your PATH.
+Move `quicktube-windows.exe` to `C:\Program Files\QuickTube\` and add it to your PATH.
 
 ---
 
@@ -42,8 +41,8 @@ Move `yt-downloader-windows.exe` to `C:\Program Files\yt-downloader\` and add it
 
 ### Step 1: Download
 
-1. Go to the [Releases page](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
-2. Download `yt-downloader-macos`
+1. Go to the [Releases page](https://github.com/abdelrahman-ahmed-nassar/YouTube-Downloader-using-yt-dlp/releases/latest)
+2. Download `quicktube-macos`
 3. Save it to your `Downloads` folder
 
 ### Step 2: Make it Executable
@@ -52,13 +51,13 @@ Move `yt-downloader-windows.exe` to `C:\Program Files\yt-downloader\` and add it
 2. Run these commands:
    ```sh
    cd ~/Downloads
-   chmod +x yt-downloader-macos
+   chmod +x quicktube-macos
    ```
 
 ### Step 3: Run
 
 ```sh
-./yt-downloader-macos
+./quicktube-macos
 ```
 
 ### Common macOS Issues
@@ -68,9 +67,9 @@ Move `yt-downloader-windows.exe` to `C:\Program Files\yt-downloader\` and add it
 This is macOS Gatekeeper being protective. Fix it with:
 
 ```sh
-xattr -cr ~/Downloads/yt-downloader-macos
-chmod +x ~/Downloads/yt-downloader-macos
-./yt-downloader-macos
+xattr -cr ~/Downloads/quicktube-macos
+chmod +x ~/Downloads/quicktube-macos
+./quicktube-macos
 ```
 
 **OR** right-click the file → select "Open" → click "Open" in the dialog.

@@ -1,6 +1,6 @@
-# 🎵 YouTube Media Downloader
+# ⚡ QuickTube - Manual Installation Guide
 
-**Download YouTube videos and audio in seconds - no installation required!**
+**Fast YouTube downloads - run from source code**
 
 [![Download Releases](https://img.shields.io/github/v/release/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp?label=Download&style=for-the-badge)](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
 [![Platform Support](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=for-the-badge)]()
@@ -145,7 +145,7 @@ If you want to modify the code or run from source:
 **Run:**
 
 ```sh
-python3 yt-downloader.py
+python3 quicktube.py
 ```
 
 ### Build Your Own Executable
@@ -162,10 +162,10 @@ Run the script in a terminal:
 
 ```sh
 # Windows (Command Prompt or PowerShell)
-python yt-downloader.py
+python quicktube.py
 
 # macOS/Linux
-python3 yt-downloader.py
+python3 quicktube.py
 ```
 
 ### Navigating to the Script Directory
@@ -174,28 +174,28 @@ python3 yt-downloader.py
 
 ```cmd
 cd C:\Users\YourName\Downloads\YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
-python yt-downloader.py
+python quicktube.py
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
 cd C:\Users\YourName\Downloads\YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
-python yt-downloader.py
+python quicktube.py
 ```
 
 **macOS (Terminal):**
 
 ```sh
 cd ~/Downloads/YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
-python3 yt-downloader.py
+python3 quicktube.py
 ```
 
 **Linux (Terminal):**
 
 ```sh
 cd ~/Downloads/YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
-python3 yt-downloader.py
+python3 quicktube.py
 ```
 
 Follow the prompts:
@@ -344,8 +344,8 @@ Always enter exact formats as prompted:
 
 ```sh
 # If you encounter permission issues
-chmod +x yt-downloader.py
-python3 yt-downloader.py
+chmod +x quicktube.py
+python3 quicktube.py
 ```
 
 **Windows:**

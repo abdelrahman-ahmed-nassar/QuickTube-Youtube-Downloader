@@ -49,7 +49,7 @@ def build_executable():
             command.extend(["--icon", "icon.icns"])
     
     # Add the main script
-    command.append("yt-downloader.py")
+    command.append("quicktube.py")
     
     # Run PyInstaller
     try:
@@ -74,7 +74,7 @@ def build_executable():
 
 def main():
     print("=" * 60)
-    print("🎵 YT-Downloader Executable Builder 🎵")
+    print("⚡ QuickTube Executable Builder ⚡")
     print("=" * 60)
     print(f"Platform: {platform.system()} {platform.release()}")
     print(f"Python: {sys.version.split()[0]}")

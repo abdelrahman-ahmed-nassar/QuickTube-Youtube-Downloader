@@ -165,7 +165,7 @@ def download_media(video_url, file_type, quality, is_playlist):
 if __name__ == "__main__":
     while True:
         print("=" * 60)
-        print("🎵 YouTube Media Downloader 🎵")
+        print("⚡ QuickTube - Fast YouTube Downloader ⚡")
         print("=" * 60)
         
         url = input("\n📎 Enter YouTube URL: ").strip()
@@ -198,7 +198,7 @@ if __name__ == "__main__":
         print("\n🔄 Download another video?")
         another = input("Enter 'yes' to continue or press Enter to exit: ").strip().lower()
         if another != "yes":
-            print("\n👋 Thanks for using YouTube Media Downloader!")
+            print("\n👋 Thanks for using QuickTube!")
             print("=" * 60)
             break
         print("\n")  # Add spacing for next download

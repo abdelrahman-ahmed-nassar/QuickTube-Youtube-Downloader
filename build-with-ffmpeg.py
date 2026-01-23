@@ -131,7 +131,7 @@ def build_with_ffmpeg():
 
 def main():
     print("=" * 60)
-    print("🎵 YT-Downloader Executable Builder (with FFmpeg) 🎵")
+    print("⚡ QuickTube Executable Builder (with FFmpeg) ⚡")
     print("=" * 60)
     print(f"Platform: {platform.system()} {platform.release()}")
     print(f"Python: {sys.version.split()[0]}")
