@@ -96,29 +96,43 @@ def convert_video(input_file, target_format):
 
 def download_media(video_url, file_type, quality, is_playlist):
     """Downloads media (MP3 or MP4) based on user choices and offers conversion afterward."""
-    # Get the directory where the executable/script is located
+    # Determine output directory based on platform and execution context
     if getattr(sys, 'frozen', False):
-        # Running as compiled executable - use executable's directory
-        base_dir = os.path.dirname(sys.executable)
+        # Running as compiled executable
+        if sys.platform == 'darwin':
+            # macOS: For .app bundles, save to output folder next to the .app
+            # sys.executable is inside QuickTube.app/Contents/MacOS/QuickTube
+            # We need to go up 3 levels to get to the parent directory of the .app
+            executable_path = os.path.abspath(sys.executable)
+            if '.app/Contents/MacOS' in executable_path:
+                # Inside an app bundle - go to parent of .app
+                app_bundle = executable_path.split('.app/Contents/MacOS')[0] + '.app'
+                base_dir = os.path.dirname(app_bundle)
+            else:
+                # Not in app bundle (shouldn't happen, but fallback)
+                base_dir = os.path.dirname(executable_path)
+            output_dir = os.path.join(base_dir, "output")
+        else:
+            # Windows/Linux: Use executable's directory
+            base_dir = os.path.dirname(sys.executable)
+            output_dir = os.path.join(base_dir, "output")
     else:
         # Running as script - use script's directory
         base_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    output_dir = os.path.join(base_dir, "output")
+        output_dir = os.path.join(base_dir, "output")
     
     # Try to create output directory, handle read-only filesystem error
     try:
         os.makedirs(output_dir, exist_ok=True)
     except (OSError, PermissionError) as e:
         print("\n" + "="*60)
-        print("❌ ERROR: Cannot create output folder in current location")
+        print("❌ ERROR: Cannot create output folder")
         print("="*60)
-        print("\n⚠️  The app is in a read-only location (likely macOS security).")
+        print(f"\n⚠️  Could not create folder: {output_dir}")
+        print(f"\n💡 Error: {e}")
         print("\n📋 SOLUTION:")
-        print("   1. Move QuickTube.app to your Documents or Desktop folder")
-        print("   2. Run it from there instead")
-        print("\n💡 Why? macOS puts downloaded apps in a temporary read-only")
-        print("   location for security. Moving the app fixes this.\n")
+        print("   1. Check folder permissions")
+        print("   2. Try running from a different location\n")
         print("="*60 + "\n")
         input("Press Enter to exit...")
         sys.exit(1)
