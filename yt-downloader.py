@@ -1,6 +1,19 @@
 import subprocess
 import os
 import re
+import sys
+
+def get_ffmpeg_path():
+    """Get the path to ffmpeg binary (bundled or system)"""
+    if getattr(sys, 'frozen', False):
+        # Running as compiled executable
+        base_path = sys._MEIPASS
+        ffmpeg_name = "ffmpeg.exe" if os.name == 'nt' else "ffmpeg"
+        bundled_ffmpeg = os.path.join(base_path, ffmpeg_name)
+        if os.path.exists(bundled_ffmpeg):
+            return bundled_ffmpeg
+    # Fall back to system ffmpeg
+    return "ffmpeg"
 
 def extract_video_url(playlist_url):
     """Extracts the single video URL from a playlist URL."""
@@ -23,9 +36,12 @@ def convert_video(input_file, target_format):
     base_name = os.path.splitext(os.path.basename(input_file))[0]
     output_file = os.path.join(os.path.dirname(input_file), f"{base_name}_converted.{target_format}")
 
+    # Get ffmpeg path (bundled or system)
+    ffmpeg_cmd = get_ffmpeg_path()
+
     if target_format == "mp4":
         command = [
-            "ffmpeg", "-y", "-i", input_file,
+            ffmpeg_cmd, "-y", "-i", input_file,
             "-vcodec", "libx264", "-profile:v", "high", "-level", "4.1",
             "-acodec", "aac", "-strict", "experimental",
             "-b:v", "1000k", "-b:a", "128k",
@@ -37,7 +53,7 @@ def convert_video(input_file, target_format):
         ]
     elif target_format == "mkv":
         command = [
-            "ffmpeg", "-y", "-i", input_file,
+            ffmpeg_cmd, "-y", "-i", input_file,
             "-c:v", "libx264", "-c:a", "aac",
             "-b:v", "1000k", "-b:a", "128k",
             "-pix_fmt", "yuv420p",
@@ -68,7 +84,15 @@ def convert_video(input_file, target_format):
 
 def download_media(video_url, file_type, quality, is_playlist):
     """Downloads media (MP3 or MP4) based on user choices and offers conversion afterward."""
-    output_dir = "output"
+    # Get the directory where the executable/script is located
+    if getattr(sys, 'frozen', False):
+        # Running as compiled executable - use executable's directory
+        base_dir = os.path.dirname(sys.executable)
+    else:
+        # Running as script - use script's directory
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    output_dir = os.path.join(base_dir, "output")
     os.makedirs(output_dir, exist_ok=True)
 
     audio_quality_map = {"low": "50K", "medium": "128K", "high": "192K"}
@@ -139,32 +163,42 @@ def download_media(video_url, file_type, quality, is_playlist):
                 print(f"📁 Saved to: {converted_file}")
     
 if __name__ == "__main__":
-    print("=" * 60)
-    print("🎵 YouTube Media Downloader 🎵")
-    print("=" * 60)
-    
-    url = input("\n📎 Enter YouTube URL: ").strip()
-
-    # Check if the URL contains a playlist
-    is_playlist = "list=" in url
-    if is_playlist:
-        choice = input("📦 This is a playlist. Download entire playlist? (yes/no): ").strip().lower()
-        if choice != "yes":
-            url = extract_video_url(url)
-            is_playlist = False
-
     while True:
-        file_type = input("📁 Enter file type (mp3/mp4): ").strip().lower()
-        if file_type in ["mp3", "mp4"]:
+        print("=" * 60)
+        print("🎵 YouTube Media Downloader 🎵")
+        print("=" * 60)
+        
+        url = input("\n📎 Enter YouTube URL: ").strip()
+
+        # Check if the URL contains a playlist
+        is_playlist = "list=" in url
+        if is_playlist:
+            choice = input("📦 This is a playlist. Download entire playlist? (yes/no): ").strip().lower()
+            if choice != "yes":
+                url = extract_video_url(url)
+                is_playlist = False
+
+        while True:
+            file_type = input("📁 Enter file type (mp3/mp4): ").strip().lower()
+            if file_type in ["mp3", "mp4"]:
+                break
+            print("⚠️  Invalid file type! Please enter 'mp3' or 'mp4'.")
+
+        print("\n🔊 Choose quality: low, medium, high")
+        quality = input("Enter quality (default: medium): ").strip().lower() or "medium"
+        if quality not in ["low", "medium", "high"]:
+            print("⚠️  Invalid quality! Defaulting to medium.")
+            quality = "medium"
+
+        print("\n" + "=" * 60)
+        download_media(url, file_type, quality, is_playlist)
+        print("=" * 60)
+        
+        # Ask if user wants to download another video
+        print("\n🔄 Download another video?")
+        another = input("Enter 'yes' to continue or press Enter to exit: ").strip().lower()
+        if another != "yes":
+            print("\n👋 Thanks for using YouTube Media Downloader!")
+            print("=" * 60)
             break
-        print("⚠️  Invalid file type! Please enter 'mp3' or 'mp4'.")
-
-    print("\n🔊 Choose quality: low, medium, high")
-    quality = input("Enter quality (default: medium): ").strip().lower() or "medium"
-    if quality not in ["low", "medium", "high"]:
-        print("⚠️  Invalid quality! Defaulting to medium.")
-        quality = "medium"
-
-    print("\n" + "=" * 60)
-    download_media(url, file_type, quality, is_playlist)
-    print("=" * 60)
+        print("\n")  # Add spacing for next download

@@ -1,145 +1,80 @@
-# YouTube Media Downloader
+# 🎵 YouTube Media Downloader
 
-## Overview
+**Download YouTube videos and audio in seconds - no installation required!**
 
-This script allows users to download and convert YouTube videos and playlists into MP3 or MP4 formats. It utilizes `yt-dlp` for downloading and `ffmpeg` for conversion, ensuring high-quality media processing.
+[![Download Releases](https://img.shields.io/github/v/release/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp?label=Download&style=for-the-badge)](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
+[![Platform Support](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=for-the-badge)]()
 
-## Features
+## 🚀 Quick Start
 
-- Download YouTube videos or entire playlists
-- Convert downloaded videos to MP4 or MKV format
-- Supports multiple quality options for both audio and video
-- Real-time download and conversion progress display
-- QuickTime Player compatible MP4 output (yuv420p pixel format)
-- User-friendly interface with emoji feedback and clear status messages
-- Input validation with helpful error messages
-- Automatic SSL certificate handling
-- Uses `yt-dlp` for reliable downloads
-- Uses `ffmpeg` for high-quality media conversion
+**Just 3 steps to start downloading:**
 
-## Prerequisites
+1. **[Download the executable](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)** for your platform
+2. **Run it** (double-click or run in terminal)
+3. **Paste a YouTube URL** and start downloading!
 
-Ensure you have the following installed on your system:
+**That's it!** No Python, no dependencies, no setup. Everything is bundled.
 
-- **Python** (latest version recommended)
-- **yt-dlp** (`pip install yt-dlp`)
-- **ffmpeg** (install via package manager or download from [ffmpeg.org](https://ffmpeg.org))
+---
 
-### Installing Prerequisites
+## 📥 Installation
 
-**For Python:**
+### Windows
 
-```sh
-# Windows (using official installer)
-# Download Python from: https://www.python.org/downloads/
-# Run the installer and follow the setup instructions
+1. Download `yt-downloader-windows.exe` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
+2. Double-click the file to run
+3. _(Optional)_ Move to a permanent location like `C:\Program Files\yt-downloader\`
 
-# Windows (using winget)
-winget install Python.Python.3
+### macOS
 
-# macOS (using Homebrew)
-brew install python
+1. Download `yt-downloader-macos` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
+2. Open Terminal and navigate to your Downloads folder:
+   ```sh
+   cd ~/Downloads
+   chmod +x yt-downloader-macos
+   ./yt-downloader-macos
+   ```
+3. _(Optional)_ Move to `/usr/local/bin/` for system-wide access:
+   ```sh
+   sudo mv yt-downloader-macos /usr/local/bin/yt-downloader
+   ```
 
-# Linux (Ubuntu/Debian)
-sudo apt install python3
+### Linux
 
-# Linux (Fedora)
-sudo dnf install python3
-```
+1. Download `yt-downloader-linux` from [Releases](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/releases/latest)
+2. Open Terminal and navigate to your Downloads folder:
+   ```sh
+   cd ~/Downloads
+   chmod +x yt-downloader-linux
+   ./yt-downloader-linux
+   ```
+3. _(Optional)_ Move to `/usr/local/bin/` for system-wide access:
+   ```sh
+   sudo mv yt-downloader-linux /usr/local/bin/yt-downloader
+   ```
 
-**For yt-dlp:**
+> **✅ No dependencies required!** Python, yt-dlp, and ffmpeg are all bundled in the executable.
 
-```sh
-pip install yt-dlp
-```
+---
 
-**For ffmpeg:**
+## ✨ Features
 
-- **Windows:**
-  1.  Download the latest build from [gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z](https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z).
-  2.  Extract the archive to a folder, e.g., `C:\ffmpeg`.
-  3.  Open the extracted folder and go to the `bin` directory.
-  4.  You will find `ffmpeg.exe`, `ffplay.exe`, and `ffprobe.exe` inside `bin`.
-  5.  Add the full path to the `bin` folder (e.g., `C:\ffmpeg\bin`) to your system PATH environment variable:
-      - Open the Start menu and search for **Environment Variables**.
-      - Click **Edit the system environment variables**.
-      - In the System Properties window, click **Environment Variables...**
-      - Under **System variables**, find and select the **Path** variable, then click **Edit**.
-      - Click **New** and add the path to your ffmpeg `bin` folder (e.g., `C:\ffmpeg\bin`).
-      - Click **OK** to save and close all windows.
-  6.  Open a new Command Prompt and run `ffmpeg -version` to verify the installation.
-- **macOS:** `brew install ffmpeg`
-- **Linux (Ubuntu/Debian):** `sudo apt install ffmpeg`
-- **Linux (Fedora):** `sudo dnf install ffmpeg`
+- 🎬 **Download YouTube videos** in MP4 format (360p, 720p, 1080p)
+- 🎵 **Extract audio** in MP3 format (50kbps, 128kbps, 192kbps)
+- 📋 **Playlist support** - download entire playlists or single videos
+- 🔄 **Format conversion** - convert between MP4 and MKV formats
+- 📊 **Real-time progress** - see download and conversion progress
+- 🎯 **QuickTime compatible** - works on all Apple devices and players
+- 🌐 **Universal compatibility** - plays on VLC, Windows Media Player, and all modern devices
+- 🎨 **Beautiful UI** - emoji feedback and clear status messages
+- 🔒 **SSL handling** - automatic certificate management
+- 📁 **Organized output** - all downloads saved to `output/` folder
 
-To verify installation, open a terminal/command prompt and type:
+---
 
-```sh
-python --version
-yt-dlp --version
-ffmpeg -version
-```
+## 🎮 Usage
 
-## Installation
-
-1. Clone or download the script.
-2. Ensure `python`, `yt-dlp` and `ffmpeg` are installed and accessible from the command line.
-
-> **Windows users:** For a step-by-step installation guide (including Python setup and environment variables), see the **Windows Installation Guide** section in [Detailed Installation Guide](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/wiki/Detailed-Installation-Guide).
-
-## Usage
-
-Run the script in a terminal:
-
-```sh
-# Windows (Command Prompt or PowerShell)
-python yt-downloader.py
-
-# macOS/Linux
-python3 yt-downloader.py
-```
-
-### Navigating to the Script Directory
-
-**Windows (Command Prompt):**
-
-```cmd
-cd C:\Users\YourName\Downloads\YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
-python yt-downloader.py
-```
-
-**Windows (PowerShell):**
-
-```powershell
-cd C:\Users\YourName\Downloads\YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
-python yt-downloader.py
-```
-
-**macOS (Terminal):**
-
-```sh
-cd ~/Downloads/YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
-python3 yt-downloader.py
-```
-
-**Linux (Terminal):**
-
-```sh
-cd ~/Downloads/YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
-python3 yt-downloader.py
-```
-
-Follow the prompts:
-
-1. Enter the YouTube video or playlist URL.
-2. Choose whether to download an entire playlist or a single video.
-3. Select the file type (`mp3` or `mp4`).
-4. Select the quality level (`low`, `medium`, or `high`).
-5. If downloading an MP4 file, you may choose to convert it to another format.
-
-### Example Usage
-
-**Download a single video in MP4 format with high quality:**
+Simply run the executable and follow the interactive prompts:
 
 ```
 ============================================================
@@ -158,148 +93,164 @@ Enter quality (default: medium): high
 ============================================================
 🎉 Successfully downloaded MP4: video-title.mp4
 📁 Saved to: /path/to/output/video-title.mp4
-
-🎬 Do you want to convert the file to another format? (yes/no): no
-============================================================
 ```
 
-**Download an MP3 file with medium quality:**
+### What You Can Download
 
-```
-📎 Enter YouTube URL: https://www.youtube.com/watch?v=example
-📁 Enter file type (mp3/mp4): mp3
+- **Single videos** - just paste the video URL
+- **Playlists** - paste playlist URL and choose to download all or single video
+- **MP3 audio** - extract audio only in high quality
+- **MP4 videos** - download videos with audio included
 
-🔊 Choose quality: low, medium, high
-Enter quality (default: medium):
+### Quality Options
 
-⏳ Downloading MP3 (MEDIUM quality)...
-[Download progress shown here]
-🎉 Successfully downloaded MP3: audio-title.mp3
-📁 Saved to: /path/to/output/audio-title.mp3
-```
+**Video (MP4):**
 
-## Output
+- `low` - 360p (small file size)
+- `medium` - 720p HD (balanced)
+- `high` - 1080p Full HD (best quality)
 
-- All downloaded media will be stored in the `output/` directory (relative to the script location)
-- Converted video files will be stored in the same directory with the `_converted` suffix
-- Original files are kept after conversion
+**Audio (MP3):**
 
-**Output Paths:**
+- `low` - 50kbps (minimal file size)
+- `medium` - 128kbps (good quality)
+- `high` - 192kbps (excellent quality)
 
-- **Windows:** `C:\path\to\script\output\video-title.mp4`
-- **macOS:** `/Users/YourName/path/to/script/output/video-title.mp4`
-- **Linux:** `/home/username/path/to/script/output/video-title.mp4`
+---
 
-## Troubleshooting
+## 📂 Output Location
 
-### SSL Certificate Errors
+All downloads are saved to the `output/` folder:
 
-**macOS:**
+- **Windows:** `C:\path\to\executable\output\`
+- **macOS:** `/path/to/executable/output/`
+- **Linux:** `/path/to/executable/output/`
+
+Files are named automatically based on the YouTube video title.
+
+---
+
+## 🛠️ Advanced Usage
+
+### For Developers: Run from Source (Manual Installation)
+
+**Don't want to download the executable?** You can run the Python script directly!
+
+See the complete manual installation and usage guide: **[docs/MANUAL_USAGE.md](docs/MANUAL_USAGE.md)**
+
+**Quick summary:**
+
+**Requirements:**
+
+- Python 3.6+
+- yt-dlp: `pip install yt-dlp`
+- ffmpeg: `brew install ffmpeg` (macOS) or equivalent
+
+**Run:**
 
 ```sh
-# Install Python certificates
-/Applications/Python\ 3.*/Install\ Certificates.command
-
-# Or update certifi
-pip3 install --upgrade certifi
-```
-
-**Windows:**
-
-```cmd
-# Update certifi
-pip install --upgrade certifi
-
-# Or reinstall Python with "Install pip" and "Add Python to PATH" options checked
-```
-
-**Linux:**
-
-```sh
-# Ubuntu/Debian
-sudo apt install ca-certificates
-sudo update-ca-certificates
-
-# Fedora
-sudo dnf install ca-certificates
-sudo update-ca-trust
-
-# Or update certifi
-pip3 install --upgrade certifi
-```
-
-### Python Command Not Found
-
-**Windows:**
-
-- Use `python` instead of `python3`
-- Ensure Python is added to PATH during installation
-- Reinstall Python with "Add Python to PATH" option checked
-
-**macOS/Linux:**
-
-- Use `python3` instead of `python`
-- Install Python via package manager (see Prerequisites section)
-
-### No Progress Display
-
-**All Platforms:**
-
-- Run the script in a proper terminal (Command Prompt, PowerShell, Terminal, etc.)
-- Avoid running through IDE output panels
-
-**Windows:**
-
-- Use Command Prompt or PowerShell, not Python IDLE
-- Enable ANSI color support in older Windows versions
-
-### Conversion Hangs
-
-**All Platforms:**
-
-- The script includes a 5-minute timeout for conversions
-- For very large files, this may need adjustment in the code
-- Press `Ctrl+C` (Windows/Linux) or `Cmd+C` (macOS) to cancel
-
-### Invalid Format Errors
-
-**All Platforms:**
-Always enter exact formats as prompted:
-
-- File type: `mp3` or `mp4` (lowercase)
-- Conversion format: `mp4` or `mkv` (lowercase)
-
-### Permission Denied Errors
-
-**macOS/Linux:**
-
-```sh
-# If you encounter permission issues
-chmod +x yt-downloader.py
 python3 yt-downloader.py
 ```
 
-**Windows:**
+This method is perfect if you:
 
-- Run Command Prompt or PowerShell as Administrator
-- Check antivirus software isn't blocking the script
+- Want to modify the code
+- Prefer installing dependencies yourself
+- Are familiar with Python development
+- Need to customize the download behavior
 
-## Notes
+### Build Your Own Executable
 
-- If a playlist URL is provided, the script will prompt you to download the full playlist or just a single video.
-- MP4 files are downloaded with H.264 video codec and AAC audio codec in yuv420p pixel format for maximum compatibility.
-- Videos are compatible with QuickTime Player, VLC, iOS devices, Android devices, and all modern media players.
-- MP3 files are extracted with the specified bitrate (50K for low, 128K for medium, 192K for high).
-- Video quality options: low (360p), medium (720p), high (1080p).
-- Conversion supports MP4 and MKV formats with optimized settings.
-- The script shows real-time progress for both downloads and conversions.
-- Downloaded files are automatically named using the YouTube video title.
-- All output files include success confirmations with full file paths.
+Want to build the executable yourself? See [docs/BUILD-EXECUTABLE.md](docs/BUILD-EXECUTABLE.md)
 
-## License
+### Create Cross-Platform Builds
 
-This script is open-source and available for use and modification under the MIT License.
+See [docs/CROSS-PLATFORM-BUILD.md](docs/CROSS-PLATFORM-BUILD.md) for building executables for all platforms
 
-## Detailed Version
+---
 
-For advanced configuration options, troubleshooting tips, and developer documentation, please refer to the [Detailed Installation Guide](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/wiki/Detailed-Installation-Guide) file included with this project.
+## ❓ Troubleshooting
+
+### macOS: "App is damaged and can't be opened"
+
+This is a Gatekeeper security warning. To bypass:
+
+```sh
+xattr -cr yt-downloader-macos
+chmod +x yt-downloader-macos
+./yt-downloader-macos
+```
+
+Or right-click the file and select "Open" from the menu.
+
+### Windows: "Windows protected your PC"
+
+Click "More info" → "Run anyway". This happens because the executable isn't digitally signed.
+
+### Linux: Permission Denied
+
+Make the file executable:
+
+```sh
+chmod +x yt-downloader-linux
+```
+
+### Slow Downloads or Errors
+
+- **Check your internet connection**
+- **Try a different video** - some videos may be restricted in your region
+- **Age-restricted videos** may not download
+- **Private videos** cannot be accessed
+
+### No Progress Display
+
+Run in a proper terminal:
+
+- **Windows:** Use Command Prompt or PowerShell (not Python IDLE)
+- **macOS/Linux:** Use Terminal app
+
+---
+
+## 📖 Documentation
+
+- **[DEPENDENCIES.md](DEPENDENCIES.md)** - Understanding what's bundled in the executable
+- **[docs/BUILD-EXECUTABLE.md](docs/BUILD-EXECUTABLE.md)** - Build your own executable
+- **[docs/CROSS-PLATFORM-BUILD.md](docs/CROSS-PLATFORM-BUILD.md)** - Create executables for all platforms
+- **[docs/RELEASE-GUIDE.md](docs/RELEASE-GUIDE.md)** - How to create releases (for maintainers)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to:
+
+- Report bugs via [Issues](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/issues)
+- Submit feature requests
+- Create pull requests
+
+---
+
+## 📜 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+---
+
+## 🌟 Support
+
+If you find this tool useful, please:
+
+- ⭐ Star the repository
+- 🐛 Report any issues you find
+- 💡 Suggest new features
+- 📢 Share with others
+
+---
+
+## ⚠️ Disclaimer
+
+This tool is for personal use only. Please respect YouTube's Terms of Service and copyright laws. Only download content you have permission to download.
+
+---
+
+**Made with ❤️ by [Abdelrahman Ahmed Nassar](https://github.com/abdelrahman-ahmed-nassar)**
