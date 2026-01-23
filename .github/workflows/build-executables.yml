@@ -88,36 +88,59 @@ jobs:
         run: |
           pyinstaller --onefile --name quicktube-windows --console --add-binary "ffmpeg.exe;." --add-binary "yt-dlp.exe;." quicktube.py
 
-      - name: Build macOS app bundle
+      - name: Build macOS executable
         if: runner.os == 'macOS'
         run: |
-          pyinstaller --windowed --name QuickTube --add-binary "ffmpeg:." --add-binary "yt-dlp:." quicktube.py
+          pyinstaller --onefile --name QuickTube --console --add-binary "ffmpeg:." --add-binary "yt-dlp:." quicktube.py
+
+      - name: Create macOS app bundle
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p QuickTube.app/Contents/MacOS
+          mkdir -p QuickTube.app/Contents/Resources
+
+          # Move the executable
+          mv dist/QuickTube QuickTube.app/Contents/MacOS/
+
+          # Create launcher script that opens Terminal
+          cat > QuickTube.app/Contents/MacOS/launcher.sh << 'EOF'
+          #!/bin/bash
+          DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+          open -a Terminal "$DIR/QuickTube"
+          EOF
+          chmod +x QuickTube.app/Contents/MacOS/launcher.sh
+
+          # Create Info.plist
+          cat > QuickTube.app/Contents/Info.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>CFBundleExecutable</key>
+              <string>launcher.sh</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.quicktube.app</string>
+              <key>CFBundleName</key>
+              <string>QuickTube</string>
+              <key>CFBundlePackageType</key>
+              <string>APPL</string>
+              <key>CFBundleShortVersionString</key>
+              <string>1.0</string>
+              <key>CFBundleVersion</key>
+              <string>1</string>
+              <key>LSMinimumSystemVersion</key>
+              <string>10.13</string>
+          </dict>
+          </plist>
+          EOF
+
+          mv QuickTube.app dist/
 
       - name: Package macOS app as zip
         if: runner.os == 'macOS'
         run: |
           cd dist
-          echo "Contents of dist folder:"
-          ls -la
-          echo "Checking for QuickTube.app:"
-          find . -name "*.app" -type d
-          if [ -d "QuickTube.app" ]; then
-            echo "Found QuickTube.app, creating zip..."
-            zip -r quicktube-macos.zip QuickTube.app
-          elif [ -d "QuickTube" ]; then
-            echo "Found QuickTube directory, creating .app bundle manually..."
-            mkdir -p QuickTube.app/Contents/MacOS
-            mv QuickTube/* QuickTube.app/Contents/MacOS/ 2>/dev/null || true
-            zip -r quicktube-macos.zip QuickTube.app
-          elif [ -f "QuickTube" ]; then
-            echo "Found QuickTube executable, zipping directly..."
-            zip quicktube-macos.zip QuickTube
-          else
-            echo "ERROR: Cannot find QuickTube output!"
-            ls -R
-            exit 1
-          fi
-          ls -lh quicktube-macos.zip
+          zip -r quicktube-macos.zip QuickTube.app
           cd ..
 
       - name: Build executable with ffmpeg (Linux)
