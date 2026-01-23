@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
     <meta
       name="description"
       content="QuickTube - The fastest way to download YouTube videos and audio. No installation required. Free, open-source, and works on Windows, macOS, and Linux."
@@ -11,6 +15,8 @@
       name="keywords"
       content="youtube downloader, video downloader, mp3 converter, youtube to mp3, youtube to mp4, yt-dlp, quicktube"
     />
+
+    <!-- Open Graph / Social Media -->
     <meta
       property="og:title"
       content="QuickTube - Fast YouTube Video & Audio Downloader"
@@ -20,7 +26,25 @@
       content="Download YouTube videos and audio instantly. No installation, no dependencies, just download and run."
     />
     <meta property="og:type" content="website" />
-    <title>⚡ QuickTube - Fast YouTube Video & Audio Downloader</title>
+    <meta property="og:image" content="opengraph-image.png" />
+    <meta
+      property="og:url"
+      content="https://abdelrahman-ahmed-nassar.github.io/QuickTube-Youtube-Downloader/"
+    />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="QuickTube - Fast YouTube Video & Audio Downloader"
+    />
+    <meta
+      name="twitter:description"
+      content="Download YouTube videos and audio instantly. No installation, no dependencies, just download and run."
+    />
+    <meta name="twitter:image" content="opengraph-image.png" />
+
+    <title>QuickTube - Fast YouTube Video & Audio Downloader</title>
     <style>
       * {
         margin: 0;
@@ -219,6 +243,15 @@
         font-size: 14px;
         color: var(--text-secondary);
         border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .badge img {
+        width: 16px;
+        height: 16px;
+        filter: brightness(0) invert(0.7);
       }
 
       /* How It Works */
@@ -438,6 +471,18 @@
         margin-bottom: 10px;
       }
 
+      .download-btn .os-icon img {
+        width: 48px;
+        height: 48px;
+        filter: brightness(0) invert(1);
+        transition: filter 0.3s;
+      }
+
+      .download-btn:hover .os-icon img {
+        filter: brightness(0) saturate(100%) invert(48%) sepia(79%)
+          saturate(2476%) hue-rotate(200deg) brightness(98%) contrast(98%);
+      }
+
       .download-btn .os-name {
         font-size: 20px;
         font-weight: 600;
@@ -611,9 +656,15 @@
         </div>
 
         <div class="platform-badges">
-          <span class="badge">🪟 Windows</span>
-          <span class="badge">🍎 macOS</span>
-          <span class="badge">🐧 Linux</span>
+          <span class="badge"
+            ><img src="assets/microsoft-windows.svg" alt="" /> Windows</span
+          >
+          <span class="badge"
+            ><img src="assets/Apple_logo.svg" alt="" /> macOS</span
+          >
+          <span class="badge"
+            ><img src="assets/terminal-linux.svg" alt="" /> Linux</span
+          >
         </div>
       </div>
     </section>
@@ -822,7 +873,9 @@
               href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest/download/quicktube-windows.exe"
               class="download-btn"
             >
-              <div class="os-icon">🪟</div>
+              <div class="os-icon">
+                <img src="assets/microsoft-windows.svg" alt="Windows" />
+              </div>
               <div class="os-name">Windows</div>
               <div
                 style="
@@ -838,7 +891,9 @@
               href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest/download/quicktube-macos"
               class="download-btn"
             >
-              <div class="os-icon">🍎</div>
+              <div class="os-icon">
+                <img src="assets/Apple_logo.svg" alt="macOS" />
+              </div>
               <div class="os-name">macOS</div>
               <div
                 style="
@@ -854,7 +909,9 @@
               href="https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest/download/quicktube-linux"
               class="download-btn"
             >
-              <div class="os-icon">🐧</div>
+              <div class="os-icon">
+                <img src="assets/terminal-linux.svg" alt="Linux" />
+              </div>
               <div class="os-name">Linux</div>
               <div
                 style="
