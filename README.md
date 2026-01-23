@@ -9,6 +9,11 @@ This script allows users to download and convert YouTube videos and playlists in
 - Download YouTube videos or entire playlists
 - Convert downloaded videos to MP4 or MKV format
 - Supports multiple quality options for both audio and video
+- Real-time download and conversion progress display
+- QuickTime Player compatible MP4 output (yuv420p pixel format)
+- User-friendly interface with emoji feedback and clear status messages
+- Input validation with helpful error messages
+- Automatic SSL certificate handling
 - Uses `yt-dlp` for reliable downloads
 - Uses `ffmpeg` for high-quality media conversion
 
@@ -87,22 +92,42 @@ ffmpeg -version
 Run the script in a terminal:
 
 ```sh
-python yt-dlp.py
+# Windows (Command Prompt or PowerShell)
+python yt-downloader.py
+
+# macOS/Linux
+python3 yt-downloader.py
 ```
 
 ### Navigating to the Script Directory
 
-1. Open a terminal or command prompt
-2. Navigate to the directory containing the script:
-   ```sh
-   cd path/to/script/directory
-   ```
-   - **Windows example:** `cd C:\Users\YourName\Downloads\YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP`
-   - **macOS/Linux example:** `cd ~/Downloads/YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP`
-3. Run the script with:
-   ```sh
-   python yt-dlp.py
-   ```
+**Windows (Command Prompt):**
+
+```cmd
+cd C:\Users\YourName\Downloads\YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
+python yt-downloader.py
+```
+
+**Windows (PowerShell):**
+
+```powershell
+cd C:\Users\YourName\Downloads\YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
+python yt-downloader.py
+```
+
+**macOS (Terminal):**
+
+```sh
+cd ~/Downloads/YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
+python3 yt-downloader.py
+```
+
+**Linux (Terminal):**
+
+```sh
+cd ~/Downloads/YOUTUBE-MEDIA-DOWNLOADER-USING-YT-DLP
+python3 yt-downloader.py
+```
 
 Follow the prompts:
 
@@ -117,30 +142,159 @@ Follow the prompts:
 **Download a single video in MP4 format with high quality:**
 
 ```
-Enter YouTube URL: https://www.youtube.com/watch?v=example
-Enter file type (mp3/mp4): mp4
+============================================================
+🎵 YouTube Media Downloader 🎵
+============================================================
+
+📎 Enter YouTube URL: https://www.youtube.com/watch?v=example
+📁 Enter file type (mp3/mp4): mp4
+
+🔊 Choose quality: low, medium, high
 Enter quality (default: medium): high
+
+============================================================
+⏳ Downloading MP4 (HIGH quality)...
+[Download progress shown here]
+============================================================
+🎉 Successfully downloaded MP4: video-title.mp4
+📁 Saved to: /path/to/output/video-title.mp4
+
+🎬 Do you want to convert the file to another format? (yes/no): no
+============================================================
 ```
 
 **Download an MP3 file with medium quality:**
 
 ```
-Enter YouTube URL: https://www.youtube.com/watch?v=example
-Enter file type (mp3/mp4): mp3
-Enter quality (default: medium): medium
+📎 Enter YouTube URL: https://www.youtube.com/watch?v=example
+📁 Enter file type (mp3/mp4): mp3
+
+🔊 Choose quality: low, medium, high
+Enter quality (default: medium):
+
+⏳ Downloading MP3 (MEDIUM quality)...
+[Download progress shown here]
+🎉 Successfully downloaded MP3: audio-title.mp3
+📁 Saved to: /path/to/output/audio-title.mp3
 ```
 
 ## Output
 
-- All downloaded media will be stored in the `output/` directory.
-- Converted video files will be stored in the same directory with the chosen format.
+- All downloaded media will be stored in the `output/` directory (relative to the script location)
+- Converted video files will be stored in the same directory with the `_converted` suffix
+- Original files are kept after conversion
+
+**Output Paths:**
+
+- **Windows:** `C:\path\to\script\output\video-title.mp4`
+- **macOS:** `/Users/YourName/path/to/script/output/video-title.mp4`
+- **Linux:** `/home/username/path/to/script/output/video-title.mp4`
+
+## Troubleshooting
+
+### SSL Certificate Errors
+
+**macOS:**
+
+```sh
+# Install Python certificates
+/Applications/Python\ 3.*/Install\ Certificates.command
+
+# Or update certifi
+pip3 install --upgrade certifi
+```
+
+**Windows:**
+
+```cmd
+# Update certifi
+pip install --upgrade certifi
+
+# Or reinstall Python with "Install pip" and "Add Python to PATH" options checked
+```
+
+**Linux:**
+
+```sh
+# Ubuntu/Debian
+sudo apt install ca-certificates
+sudo update-ca-certificates
+
+# Fedora
+sudo dnf install ca-certificates
+sudo update-ca-trust
+
+# Or update certifi
+pip3 install --upgrade certifi
+```
+
+### Python Command Not Found
+
+**Windows:**
+
+- Use `python` instead of `python3`
+- Ensure Python is added to PATH during installation
+- Reinstall Python with "Add Python to PATH" option checked
+
+**macOS/Linux:**
+
+- Use `python3` instead of `python`
+- Install Python via package manager (see Prerequisites section)
+
+### No Progress Display
+
+**All Platforms:**
+
+- Run the script in a proper terminal (Command Prompt, PowerShell, Terminal, etc.)
+- Avoid running through IDE output panels
+
+**Windows:**
+
+- Use Command Prompt or PowerShell, not Python IDLE
+- Enable ANSI color support in older Windows versions
+
+### Conversion Hangs
+
+**All Platforms:**
+
+- The script includes a 5-minute timeout for conversions
+- For very large files, this may need adjustment in the code
+- Press `Ctrl+C` (Windows/Linux) or `Cmd+C` (macOS) to cancel
+
+### Invalid Format Errors
+
+**All Platforms:**
+Always enter exact formats as prompted:
+
+- File type: `mp3` or `mp4` (lowercase)
+- Conversion format: `mp4` or `mkv` (lowercase)
+
+### Permission Denied Errors
+
+**macOS/Linux:**
+
+```sh
+# If you encounter permission issues
+chmod +x yt-downloader.py
+python3 yt-downloader.py
+```
+
+**Windows:**
+
+- Run Command Prompt or PowerShell as Administrator
+- Check antivirus software isn't blocking the script
 
 ## Notes
 
 - If a playlist URL is provided, the script will prompt you to download the full playlist or just a single video.
-- MP4 files are downloaded in the best available format up to the selected resolution.
-- MP3 files are extracted with the specified bitrate.
-- Conversion only applies to MP4 files and supports MP4 and MKV formats.
+- MP4 files are downloaded with H.264 video codec and AAC audio codec in yuv420p pixel format for maximum compatibility.
+- Videos are compatible with QuickTime Player, VLC, iOS devices, Android devices, and all modern media players.
+- MP3 files are extracted with the specified bitrate (50K for low, 128K for medium, 192K for high).
+- Video quality options: low (360p), medium (720p), high (1080p).
+- Conversion supports MP4 and MKV formats with optimized settings.
+- The script shows real-time progress for both downloads and conversions.
+- Downloaded files are automatically named using the YouTube video title.
+- All output files include success confirmations with full file paths.
 
 ## License
 
@@ -149,4 +303,3 @@ This script is open-source and available for use and modification under the MIT 
 ## Detailed Version
 
 For advanced configuration options, troubleshooting tips, and developer documentation, please refer to the [Detailed Installation Guide](https://github.com/abdelrahman-ahmed-nassar/YouTube-Media-Downloader-using-yt-dlp/wiki/Detailed-Installation-Guide) file included with this project.
-
