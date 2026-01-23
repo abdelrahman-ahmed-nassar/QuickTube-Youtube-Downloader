@@ -97,7 +97,13 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cd dist
-          zip -r quicktube-macos.zip QuickTube.app
+          ls -la
+          if [ -d "QuickTube.app" ]; then
+            zip -r quicktube-macos.zip QuickTube.app
+          else
+            echo "QuickTube.app not found, creating zip with QuickTube executable instead"
+            zip quicktube-macos.zip QuickTube
+          fi
           cd ..
 
       - name: Build executable with ffmpeg (Linux)
