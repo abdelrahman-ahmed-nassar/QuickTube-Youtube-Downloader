@@ -27,17 +27,13 @@
 
 ### macOS
 
-1. Download `quicktube-macos` from [Releases](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest/download/quicktube-macos)
-2. Open Terminal and navigate to your Downloads folder:
-   ```sh
-   cd ~/Downloads
-   chmod +x quicktube-macos
-   ./quicktube-macos
-   ```
-3. _(Optional)_ Move to `/usr/local/bin/` for system-wide access:
-   ```sh
-   sudo mv quicktube-macos /usr/local/bin/quicktube
-   ```
+1. Download `quicktube-macos.zip` from [Releases](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest/download/quicktube-macos.zip)
+2. Double-click the zip file to extract `QuickTube.app`
+3. Right-click `QuickTube.app` → **Open** → **Open** (first time only to bypass Gatekeeper)
+4. The app will open in Terminal automatically
+5. _(Optional)_ Move `QuickTube.app` to your Applications folder for easy access
+
+> **Note:** macOS will show a security warning the first time. This is normal for apps not signed with an Apple Developer certificate.
 
 ### Linux
 
