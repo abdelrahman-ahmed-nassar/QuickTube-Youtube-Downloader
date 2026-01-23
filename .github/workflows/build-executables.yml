@@ -48,12 +48,23 @@ jobs:
           Copy-Item $ffmpegPath.FullName -Destination "ffmpeg.exe"
           Remove-Item -Path "ffmpeg.zip", "ffmpeg_temp" -Recurse -Force
 
+      - name: Download yt-dlp (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile "yt-dlp.exe"
+
       - name: Download and setup ffmpeg (macOS)
         if: runner.os == 'macOS'
         run: |
           brew install ffmpeg
           cp $(which ffmpeg) ffmpeg
           chmod +x ffmpeg
+
+      - name: Download yt-dlp (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos -o yt-dlp
+          chmod +x yt-dlp
 
       - name: Download and setup ffmpeg (Linux)
         if: runner.os == 'Linux'
@@ -64,15 +75,21 @@ jobs:
           chmod +x ffmpeg
           rm -rf ffmpeg-release-amd64-static.tar.xz ffmpeg-*-static
 
+      - name: Download yt-dlp (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
+          chmod +x yt-dlp
+
       - name: Build executable with ffmpeg (Windows)
         if: runner.os == 'Windows'
         run: |
-          pyinstaller --onefile --name quicktube-windows --console --add-binary "ffmpeg.exe;." quicktube.py
+          pyinstaller --onefile --name quicktube-windows --console --add-binary "ffmpeg.exe;." --add-binary "yt-dlp.exe;." quicktube.py
 
       - name: Build executable with ffmpeg (Unix)
         if: runner.os != 'Windows'
         run: |
-          pyinstaller --onefile --name ${{ matrix.output_name }} --console --add-binary "ffmpeg:." quicktube.py
+          pyinstaller --onefile --name ${{ matrix.output_name }} --console --add-binary "ffmpeg:." --add-binary "yt-dlp:." quicktube.py
 
       - name: Make executable (Unix)
         if: runner.os != 'Windows'

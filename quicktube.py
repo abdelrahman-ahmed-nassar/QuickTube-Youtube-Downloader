@@ -15,6 +15,18 @@ def get_ffmpeg_path():
     # Fall back to system ffmpeg
     return "ffmpeg"
 
+def get_ytdlp_path():
+    """Get the path to yt-dlp binary (bundled or system)"""
+    if getattr(sys, 'frozen', False):
+        # Running as compiled executable
+        base_path = sys._MEIPASS
+        ytdlp_name = "yt-dlp.exe" if os.name == 'nt' else "yt-dlp"
+        bundled_ytdlp = os.path.join(base_path, ytdlp_name)
+        if os.path.exists(bundled_ytdlp):
+            return bundled_ytdlp
+    # Fall back to system yt-dlp
+    return "yt-dlp"
+
 def extract_video_url(playlist_url):
     """Extracts the single video URL from a playlist URL."""
     match = re.search(r"v=([a-zA-Z0-9_-]+)", playlist_url)
@@ -100,7 +112,11 @@ def download_media(video_url, file_type, quality, is_playlist):
 
     # Filename template uses YouTube video title and extension
     filename = os.path.join(output_dir, "%(title)s.%(ext)s")
-    command = ["yt-dlp", "-o", filename, "--no-warnings", "--no-check-certificate", "--progress", "--newline"]
+    
+    # Get yt-dlp path (bundled or system)
+    ytdlp_cmd = get_ytdlp_path()
+    
+    command = [ytdlp_cmd, "-o", filename, "--no-warnings", "--no-check-certificate", "--progress", "--newline"]
 
     if file_type == "mp3":
         bitrate = audio_quality_map.get(quality, "128K")

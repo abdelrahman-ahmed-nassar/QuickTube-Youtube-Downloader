@@ -76,12 +76,41 @@ def download_ffmpeg():
         shutil.rmtree(ffmpeg_dir)
         return "ffmpeg"
 
+def download_ytdlp():
+    """Download yt-dlp binary for the current platform"""
+    system = platform.system()
+    
+    print(f"📥 Downloading yt-dlp for {system}...")
+    
+    if system == "Windows":
+        url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"
+        filename = "yt-dlp.exe"
+    elif system == "Darwin":  # macOS
+        url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos"
+        filename = "yt-dlp"
+    else:  # Linux
+        url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
+        filename = "yt-dlp"
+    
+    try:
+        urllib.request.urlretrieve(url, filename)
+        
+        # Make executable on Unix-like systems
+        if system != "Windows":
+            os.chmod(filename, 0o755)
+        
+        print(f"✅ {filename} downloaded")
+        return filename
+    except Exception as e:
+        print(f"⚠️ Could not download yt-dlp: {e}")
+        return None
+
 def build_with_ffmpeg():
-    """Build executable with ffmpeg bundled"""
+    """Build executable with ffmpeg and yt-dlp bundled"""
     system = platform.system()
     
     print("=" * 60)
-    print("🔨 Building executable with bundled ffmpeg...")
+    print("🔨 Building executable with bundled ffmpeg and yt-dlp...")
     print("=" * 60)
     
     # Download ffmpeg
@@ -92,11 +121,19 @@ def build_with_ffmpeg():
         print("Building without bundled ffmpeg...")
         ffmpeg_binary = None
     
+    # Download yt-dlp
+    try:
+        ytdlp_binary = download_ytdlp()
+    except Exception as e:
+        print(f"⚠️  Could not download yt-dlp: {e}")
+        print("Building without bundled yt-dlp...")
+        ytdlp_binary = None
+    
     # Build command
     command = [
         "pyinstaller",
         "--onefile",
-        "--name", "yt-downloader",
+        "--name", "quicktube",
         "--console",
         "--clean",
     ]
@@ -108,6 +145,13 @@ def build_with_ffmpeg():
         ])
         print(f"✅ Bundling {ffmpeg_binary} with executable")
     
+    # Add yt-dlp as data file if downloaded
+    if ytdlp_binary and os.path.exists(ytdlp_binary):
+        command.extend([
+            "--add-binary", f"{ytdlp_binary}:.",
+        ])
+        print(f"✅ Bundling {ytdlp_binary} with executable")
+    
     # Add the main script
     command.append("quicktube.py")
     
@@ -118,11 +162,13 @@ def build_with_ffmpeg():
         # Cleanup
         if ffmpeg_binary and os.path.exists(ffmpeg_binary):
             os.remove(ffmpeg_binary)
+        if ytdlp_binary and os.path.exists(ytdlp_binary):
+            os.remove(ytdlp_binary)
         
         print("\n" + "=" * 60)
         print("✅ Build completed successfully!")
-        print("\n🎉 Executable includes ffmpeg - no separate installation needed!")
-        print(f"\n📁 Executable location: dist/yt-downloader{'.exe' if system == 'Windows' else ''}")
+        print("\n🎉 Executable includes ffmpeg and yt-dlp - no separate installation needed!")
+        print(f"\n📁 Executable location: dist/quicktube{'.exe' if system == 'Windows' else ''}")
         print("=" * 60)
         return True
     except subprocess.CalledProcessError as e:
@@ -152,7 +198,7 @@ def main():
             return
     
     # Build
-    print("⚠️  This will download ffmpeg (~50-100 MB)")
+    print("⚠️  This will download ffmpeg and yt-dlp (~50-100 MB)")
     proceed = input("Proceed? (yes/no): ").strip().lower()
     
     if proceed == "yes":
