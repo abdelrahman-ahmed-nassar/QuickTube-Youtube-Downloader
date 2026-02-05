@@ -313,22 +313,34 @@ def download_media(video_url, file_type, quality, is_playlist):
         print("   1. Yes (full conversion - slower, may fix playback issues)")
         print("   2. Yes (quick copy - instant, same quality)")
         print("   3. No")
-        convert_choice = input("Enter your choice (1-3): ").strip()
-        if convert_choice in ["1", "2"]:
+        convert_choice = input("Enter your choice (1-3): ").strip().lower()
+        if convert_choice in ["1", "2", "yes", "y", "full", "quick", "copy"]:
+            # Determine conversion type
+            if convert_choice in ["2", "quick", "copy"]:
+                is_quick = True
+            elif convert_choice in ["1", "full"]:
+                is_quick = False
+            else:  # "yes" or "y" - ask which type
+                print("\n⚡ Conversion type:")
+                print("   1. Full conversion (slower, may fix issues)")
+                print("   2. Quick copy (instant, same quality)")
+                type_choice = input("Enter your choice (1-2, default: 2): ").strip().lower() or "2"
+                is_quick = type_choice in ["2", "quick", "copy"]
+            
             print("\n📦 Select target format:")
             print("   1. MP4")
             print("   2. MKV")
             while True:
-                format_choice = input("Enter your choice (1-2): ").strip()
-                if format_choice == "1":
+                format_choice = input("Enter your choice (1-2): ").strip().lower()
+                if format_choice in ["1", "mp4"]:
                     target_format = "mp4"
                     break
-                elif format_choice == "2":
+                elif format_choice in ["2", "mkv"]:
                     target_format = "mkv"
                     break
-                print("⚠️  Invalid choice! Please enter 1 or 2.")
+                print("⚠️  Invalid choice! Please enter 1, 2, or type 'mp4'/'mkv'.")
             
-            if convert_choice == "2":
+            if is_quick:
                 # Quick remux - just copy streams without re-encoding
                 converted_file = remux_video(output_file, target_format)
             else:
@@ -366,8 +378,8 @@ if __name__ == "__main__":
             print("\n📦 This is a playlist. What would you like to do?")
             print("   1. Download entire playlist")
             print("   2. Download single video only")
-            choice = input("Enter your choice (1-2): ").strip()
-            if choice == "2":
+            choice = input("Enter your choice (1-2): ").strip().lower()
+            if choice in ["2", "single", "video", "one"]:
                 url = extract_video_url(url)
                 is_playlist = False
 
@@ -375,14 +387,14 @@ if __name__ == "__main__":
         print("   1. MP3 (Audio only)")
         print("   2. MP4 (Video)")
         while True:
-            choice = input("Enter your choice (1-2): ").strip()
-            if choice == "1":
+            choice = input("Enter your choice (1-2): ").strip().lower()
+            if choice in ["1", "mp3", "audio"]:
                 file_type = "mp3"
                 break
-            elif choice == "2":
+            elif choice in ["2", "mp4", "video"]:
                 file_type = "mp4"
                 break
-            print("⚠️  Invalid choice! Please enter 1 or 2.")
+            print("⚠️  Invalid choice! Please enter 1, 2, or type 'mp3'/'mp4'.")
 
         # Quality selection based on file type
         if file_type == "mp3":
@@ -392,20 +404,20 @@ if __name__ == "__main__":
             print("   3. 192 kbps")
             print("   4. 320 kbps (Highest)")
             while True:
-                choice = input("Enter your choice (1-4, default: 2): ").strip() or "2"
-                if choice == "1":
+                choice = input("Enter your choice (1-4, default: 2): ").strip().lower() or "2"
+                if choice in ["1", "64"]:
                     quality = "64"
                     break
-                elif choice == "2":
+                elif choice in ["2", "128"]:
                     quality = "128"
                     break
-                elif choice == "3":
+                elif choice in ["3", "192"]:
                     quality = "192"
                     break
-                elif choice == "4":
+                elif choice in ["4", "320"]:
                     quality = "320"
                     break
-                print("⚠️  Invalid choice! Please enter 1, 2, 3, or 4.")
+                print("⚠️  Invalid choice! Please enter 1-4 or the bitrate (64/128/192/320).")
         else:  # mp4
             print("\n🎬 Select video resolution:")
             print("   1. 144p")
@@ -417,32 +429,32 @@ if __name__ == "__main__":
             print("   7. 1440p (2K)")
             print("   8. 2160p (4K)")
             while True:
-                choice = input("Enter your choice (1-8, default: 5): ").strip() or "5"
-                if choice == "1":
+                choice = input("Enter your choice (1-8, default: 5): ").strip().lower().replace('p', '') or "5"
+                if choice in ["1", "144"]:
                     quality = "144"
                     break
-                elif choice == "2":
+                elif choice in ["2", "240"]:
                     quality = "240"
                     break
-                elif choice == "3":
+                elif choice in ["3", "360"]:
                     quality = "360"
                     break
-                elif choice == "4":
+                elif choice in ["4", "480"]:
                     quality = "480"
                     break
-                elif choice == "5":
+                elif choice in ["5", "720", "hd"]:
                     quality = "720"
                     break
-                elif choice == "6":
+                elif choice in ["6", "1080", "fullhd", "full hd"]:
                     quality = "1080"
                     break
-                elif choice == "7":
+                elif choice in ["7", "1440", "2k"]:
                     quality = "1440"
                     break
-                elif choice == "8":
+                elif choice in ["8", "2160", "4k"]:
                     quality = "2160"
                     break
-                print("⚠️  Invalid choice! Please enter 1-8.")
+                print("⚠️  Invalid choice! Please enter 1-8 or resolution (144/240/360/480/720/1080/1440/2160).")
 
         print("\n" + "=" * 60)
         download_media(url, file_type, quality, is_playlist)
@@ -453,7 +465,7 @@ if __name__ == "__main__":
         print("   1. Yes")
         print("   2. No (Exit)")
         another = input("Enter your choice (1-2): ").strip()
-        if another != "1":
+        if another.lower() not in ["1", "yes", "y"]:
             print("\n👋 Thanks for using QuickTube!")
             print("=" * 60)
             break
