@@ -16,13 +16,28 @@ permissions:
 
 env:
   PYTHON_VERSION: "3.11"
-  # Pin versions for reproducible builds
   FFMPEG_VERSION: "latest"
 
 jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build:
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    needs: [create-release]
+    if: always() && (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch')
     strategy:
       fail-fast: false # Continue building other platforms if one fails
       matrix:
@@ -254,10 +269,6 @@ jobs:
           files: |
             dist/quicktube-macos.zip
             dist/quicktube-macos.zip.sha256
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -268,9 +279,5 @@ jobs:
           files: |
             dist/${{ matrix.output_name }}
             dist/${{ matrix.output_name }}.sha256
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
