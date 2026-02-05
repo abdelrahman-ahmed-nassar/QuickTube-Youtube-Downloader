@@ -269,6 +269,8 @@ jobs:
           files: |
             dist/quicktube-macos.zip
             dist/quicktube-macos.zip.sha256
+          append_body: false
+          make_latest: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -279,5 +281,7 @@ jobs:
           files: |
             dist/${{ matrix.output_name }}
             dist/${{ matrix.output_name }}.sha256
+          append_body: false
+          make_latest: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
