@@ -78,19 +78,21 @@ jobs:
       - name: Download and setup ffmpeg (macOS)
         if: runner.os == 'macOS'
         run: |
-          # Use yt-dlp's ffmpeg builds for better compatibility
+          # Use evermeet.cx for macOS ffmpeg (supports both Intel and ARM)
           ARCH=$(uname -m)
           if [ "$ARCH" = "arm64" ]; then
-            curl -L "https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-macos-arm64.tar.xz" -o ffmpeg.tar.xz
+            # For ARM64, use static build from osxexperts
+            curl -L "https://www.osxexperts.net/ffmpeg7arm.zip" -o ffmpeg.zip
+            unzip -q ffmpeg.zip
+            mv ffmpeg7arm ffmpeg
           else
-            curl -L "https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-macos64.tar.xz" -o ffmpeg.tar.xz
+            # For Intel, use evermeet.cx
+            curl -L "https://evermeet.cx/ffmpeg/getrelease/zip" -o ffmpeg.zip
+            unzip -q ffmpeg.zip
           fi
-          tar -xf ffmpeg.tar.xz
-          find . -name "ffmpeg" -type f -perm +111 -exec cp {} ffmpeg \; 2>/dev/null || \
-            find . -name "ffmpeg" -type f -executable -exec cp {} ffmpeg \;
           chmod +x ffmpeg
           ./ffmpeg -version
-          rm -rf ffmpeg.tar.xz ffmpeg-*
+          rm -rf ffmpeg.zip
 
       - name: Download yt-dlp (macOS)
         if: runner.os == 'macOS'
