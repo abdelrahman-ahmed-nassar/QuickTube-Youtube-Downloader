@@ -75,16 +75,6 @@ jobs:
           Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile "yt-dlp.exe"
           .\\yt-dlp.exe --version
 
-      - name: Verify binaries exist
-        shell: bash
-        run: |
-          echo "Checking for required binaries..."
-          if [ "$RUNNER_OS" == "Windows" ]; then
-            ls -la ffmpeg.exe yt-dlp.exe
-          else
-            ls -la ffmpeg yt-dlp
-          fi
-
       - name: Download and setup ffmpeg (macOS)
         if: runner.os == 'macOS'
         run: |
