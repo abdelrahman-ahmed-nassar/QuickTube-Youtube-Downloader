@@ -34,8 +34,38 @@ def extract_video_url(playlist_url):
         return f"https://www.youtube.com/watch?v={match.group(1)}"
     return playlist_url
 
+def validate_youtube_url(url):
+    """Validates if the URL is a valid YouTube URL."""
+    youtube_patterns = [
+        r'(https?://)?(www\.)?youtube\.com/watch\?v=',
+        r'(https?://)?(www\.)?youtube\.com/playlist\?list=',
+        r'(https?://)?(www\.)?youtube\.com/shorts/',
+        r'(https?://)?(www\.)?youtu\.be/',
+        r'(https?://)?(music\.)?youtube\.com/',
+    ]
+    return any(re.match(pattern, url) for pattern in youtube_patterns)
+
+def sanitize_filename(filename):
+    """Remove or replace characters that cause issues on various filesystems."""
+    # Characters that are problematic on Windows/macOS/Linux
+    invalid_chars = '<>:"/\\|?*'
+    for char in invalid_chars:
+        filename = filename.replace(char, '_')
+    return filename
+
+def get_cpu_thread_count():
+    """Get optimal thread count for encoding (use half of available cores to prevent overheating)"""
+    try:
+        import multiprocessing
+        cores = multiprocessing.cpu_count()
+        # Use half the cores (minimum 1, maximum 4) to prevent device overheating
+        return str(max(1, min(cores // 2, 4)))
+    except:
+        return "2"  # Safe default
+
 def convert_video(input_file, target_format):
-    """Converts the video to the specified format using H.264 for video and AAC for audio."""
+    """Converts the video to the specified format using H.264 for video and AAC for audio.
+    Uses resource-efficient settings to prevent device overheating."""
     # Get the current file extension
     current_ext = os.path.splitext(input_file)[1][1:].lower()
     
@@ -50,14 +80,20 @@ def convert_video(input_file, target_format):
 
     # Get ffmpeg path (bundled or system)
     ffmpeg_cmd = get_ffmpeg_path()
+    thread_count = get_cpu_thread_count()
 
+    # Common ffmpeg settings to reduce CPU usage and prevent overheating:
+    # - ultrafast preset: fastest encoding, lowest CPU usage
+    # - threads: limit CPU threads used
+    # - crf 23: good quality with reasonable file size
     if target_format == "mp4":
         command = [
             ffmpeg_cmd, "-y", "-i", input_file,
+            "-threads", thread_count,
             "-vcodec", "libx264", "-profile:v", "high", "-level", "4.1",
-            "-acodec", "aac", "-strict", "experimental",
-            "-b:v", "1000k", "-b:a", "128k",
-            "-preset", "fast", "-crf", "23",
+            "-acodec", "aac",
+            "-preset", "ultrafast",  # Much faster, less CPU intensive
+            "-crf", "23",
             "-pix_fmt", "yuv420p",
             "-movflags", "+faststart",
             "-loglevel", "error", "-stats",
@@ -66,8 +102,10 @@ def convert_video(input_file, target_format):
     elif target_format == "mkv":
         command = [
             ffmpeg_cmd, "-y", "-i", input_file,
+            "-threads", thread_count,
             "-c:v", "libx264", "-c:a", "aac",
-            "-b:v", "1000k", "-b:a", "128k",
+            "-preset", "ultrafast",  # Much faster, less CPU intensive
+            "-crf", "23",
             "-pix_fmt", "yuv420p",
             "-loglevel", "error", "-stats",
             output_file
@@ -76,10 +114,10 @@ def convert_video(input_file, target_format):
         print("❌ Unsupported format. No conversion performed.")
         return None
 
-    print(f"🔄 Converting to {target_format.upper()}...")
+    print(f"🔄 Converting to {target_format.upper()} (using {thread_count} CPU threads)...")
     try:
         # Don't capture output so user can see ffmpeg progress
-        result = subprocess.run(command, timeout=300)  # 5 minute timeout
+        result = subprocess.run(command, timeout=600)  # 10 minute timeout for larger files
         
         if result.returncode == 0:
             print(f"✅ Successfully converted to {target_format.upper()}!")
@@ -88,10 +126,51 @@ def convert_video(input_file, target_format):
             print(f"❌ Conversion failed.")
             return None
     except subprocess.TimeoutExpired:
-        print("❌ Conversion timeout (exceeded 5 minutes).")
+        print("❌ Conversion timeout (exceeded 10 minutes).")
         return None
     except Exception as e:
         print(f"❌ Conversion error: {str(e)}")
+        return None
+
+def remux_video(input_file, target_format):
+    """Remux video to another container without re-encoding (fast, no quality loss)."""
+    current_ext = os.path.splitext(input_file)[1][1:].lower()
+    
+    if current_ext == target_format.lower():
+        print(f"⚠️  File is already in {target_format.upper()} format. No remux needed.")
+        return input_file
+    
+    base_name = os.path.splitext(os.path.basename(input_file))[0]
+    output_file = os.path.join(os.path.dirname(input_file), f"{base_name}_remuxed.{target_format}")
+    
+    ffmpeg_cmd = get_ffmpeg_path()
+    
+    # Copy streams without re-encoding - very fast, no quality loss
+    command = [
+        ffmpeg_cmd, "-y", "-i", input_file,
+        "-c", "copy",  # Copy all streams without re-encoding
+        "-movflags", "+faststart" if target_format == "mp4" else "",
+        "-loglevel", "error", "-stats",
+        output_file
+    ]
+    # Remove empty arguments
+    command = [arg for arg in command if arg]
+    
+    print(f"🔄 Remuxing to {target_format.upper()} (no re-encoding, instant)...")
+    try:
+        result = subprocess.run(command, timeout=120)  # 2 minute timeout (remux is fast)
+        
+        if result.returncode == 0:
+            print(f"✅ Successfully remuxed to {target_format.upper()}!")
+            return output_file
+        else:
+            print(f"❌ Remux failed.")
+            return None
+    except subprocess.TimeoutExpired:
+        print("❌ Remux timeout.")
+        return None
+    except Exception as e:
+        print(f"❌ Remux error: {str(e)}")
         return None
 
 def download_media(video_url, file_type, quality, is_playlist):
@@ -137,26 +216,52 @@ def download_media(video_url, file_type, quality, is_playlist):
         input("Press Enter to exit...")
         sys.exit(1)
 
-    audio_quality_map = {"low": "50K", "medium": "128K", "high": "192K"}
-    video_quality_map = {"low": "360", "medium": "720", "high": "1080"}
+    # Quality is now the actual resolution/bitrate value
+    audio_quality_map = {"64": "64K", "128": "128K", "192": "192K", "320": "320K"}
+    video_quality_map = {"144": "144", "240": "240", "360": "360", "480": "480", "720": "720", "1080": "1080", "1440": "1440", "2160": "2160"}
 
     # Filename template uses YouTube video title and extension
     filename = os.path.join(output_dir, "%(title)s.%(ext)s")
     
     # Get yt-dlp path (bundled or system)
     ytdlp_cmd = get_ytdlp_path()
+    thread_count = get_cpu_thread_count()
     
-    command = [ytdlp_cmd, "-o", filename, "--no-warnings", "--no-check-certificate", "--progress", "--newline"]
+    # Enhanced command with:
+    # - Cleaner progress bar (single line updates)
+    # - Anti-blocking measures
+    # - Reduced CPU usage for merging
+    # - Concurrent downloads for faster speeds
+    command = [
+        ytdlp_cmd, "-o", filename,
+        "--no-warnings",
+        "--no-check-certificate",
+        # Concurrent fragment downloads (faster for DASH/HLS streams)
+        "--concurrent-fragments", "4",
+        # Progress bar settings - use default yt-dlp progress (updates in place)
+        "--progress",
+        "--console-title",
+        # Add user agent to avoid blocking
+        "--user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        # Retry on failures
+        "--retries", "3",
+        "--fragment-retries", "3",
+    ]
 
     if file_type == "mp3":
         bitrate = audio_quality_map.get(quality, "128K")
         command += ["-x", "--audio-format", "mp3", "--audio-quality", bitrate]
     elif file_type == "mp4":
         resolution = video_quality_map.get(quality, "720")
+        # IMPROVED FORMAT SELECTION:
+        # 1. First try: pre-merged mp4 with video+audio (no separate download/merge needed)
+        # 2. Second try: best video + audio that need merging
+        # This reduces bandwidth by preferring already-combined formats
         command += [
-            "-f", f"bv*[height<={resolution}]+ba/best",
+            "-f", f"best[height<={resolution}][ext=mp4]/bestvideo[height<={resolution}]+bestaudio/best[height<={resolution}]",
             "--merge-output-format", "mp4",
-            "--postprocessor-args", "ffmpeg:-movflags +faststart -vcodec libx264 -acodec aac -pix_fmt yuv420p"
+            # Use lightweight ffmpeg settings for merging to reduce CPU/heat
+            "--postprocessor-args", f"ffmpeg:-threads {thread_count} -preset ultrafast -movflags +faststart"
         ]
 
     if not is_playlist:
@@ -165,7 +270,10 @@ def download_media(video_url, file_type, quality, is_playlist):
     # Use yt-dlp's --print after_move:filepath to capture the output filename (suppress this output)
     command.append(video_url)
     
-    print(f"⏳ Downloading {file_type.upper()} ({quality.upper()} quality)...")
+    # Display quality in user-friendly format
+    quality_display = f"{quality}p" if file_type == "mp4" else f"{quality} kbps"
+    
+    print(f"\n⏳ Downloading {file_type.upper()} ({quality_display})...")
     print("=" * 60)
     
     # Run command without capturing output to show real-time progress
@@ -176,6 +284,11 @@ def download_media(video_url, file_type, quality, is_playlist):
     # Check if download was successful
     if result.returncode != 0:
         print(f"❌ Download failed!")
+        print("\n💡 Troubleshooting tips:")
+        print("   1. Update yt-dlp: pip install --upgrade yt-dlp")
+        print("   2. Check if video is region-restricted")
+        print("   3. Try again later (rate limiting)")
+        print("   4. For age-restricted videos, make sure you're logged into Chrome")
         return
 
     # Find the downloaded file in the output directory
@@ -196,14 +309,31 @@ def download_media(video_url, file_type, quality, is_playlist):
     
     # Conversion step for video files only
     if file_type == "mp4":
-        convert_choice = input("\n🎬 Do you want to convert the file to another format? (yes/no): ").strip().lower()
-        if convert_choice == "yes":
+        print("\n🎬 Convert to another format?")
+        print("   1. Yes (full conversion - slower, may fix playback issues)")
+        print("   2. Yes (quick copy - instant, same quality)")
+        print("   3. No")
+        convert_choice = input("Enter your choice (1-3): ").strip()
+        if convert_choice in ["1", "2"]:
+            print("\n📦 Select target format:")
+            print("   1. MP4")
+            print("   2. MKV")
             while True:
-                target_format = input("Enter target format (mp4/mkv): ").strip().lower()
-                if target_format in ["mp4", "mkv"]:
+                format_choice = input("Enter your choice (1-2): ").strip()
+                if format_choice == "1":
+                    target_format = "mp4"
                     break
-                print("⚠️  Invalid format! Please enter 'mp4' or 'mkv'.")
-            converted_file = convert_video(output_file, target_format)
+                elif format_choice == "2":
+                    target_format = "mkv"
+                    break
+                print("⚠️  Invalid choice! Please enter 1 or 2.")
+            
+            if convert_choice == "2":
+                # Quick remux - just copy streams without re-encoding
+                converted_file = remux_video(output_file, target_format)
+            else:
+                converted_file = convert_video(output_file, target_format)
+            
             if converted_file:
                 print(f"🎉 Conversion complete!")
                 print(f"📁 Saved to: {converted_file}")
@@ -215,26 +345,104 @@ if __name__ == "__main__":
         print("=" * 60)
         
         url = input("\n📎 Enter YouTube URL: ").strip()
+        
+        # Validate URL
+        if not url:
+            print("⚠️  No URL entered. Please try again.")
+            continue
+        
+        if not validate_youtube_url(url):
+            print("⚠️  Invalid YouTube URL. Please enter a valid YouTube link.")
+            print("   Supported formats:")
+            print("   • youtube.com/watch?v=...")
+            print("   • youtu.be/...")
+            print("   • youtube.com/playlist?list=...")
+            print("   • youtube.com/shorts/...")
+            continue
 
         # Check if the URL contains a playlist
         is_playlist = "list=" in url
         if is_playlist:
-            choice = input("📦 This is a playlist. Download entire playlist? (yes/no): ").strip().lower()
-            if choice != "yes":
+            print("\n📦 This is a playlist. What would you like to do?")
+            print("   1. Download entire playlist")
+            print("   2. Download single video only")
+            choice = input("Enter your choice (1-2): ").strip()
+            if choice == "2":
                 url = extract_video_url(url)
                 is_playlist = False
 
+        print("\n📁 Select file type:")
+        print("   1. MP3 (Audio only)")
+        print("   2. MP4 (Video)")
         while True:
-            file_type = input("📁 Enter file type (mp3/mp4): ").strip().lower()
-            if file_type in ["mp3", "mp4"]:
+            choice = input("Enter your choice (1-2): ").strip()
+            if choice == "1":
+                file_type = "mp3"
                 break
-            print("⚠️  Invalid file type! Please enter 'mp3' or 'mp4'.")
+            elif choice == "2":
+                file_type = "mp4"
+                break
+            print("⚠️  Invalid choice! Please enter 1 or 2.")
 
-        print("\n🔊 Choose quality: low, medium, high")
-        quality = input("Enter quality (default: medium): ").strip().lower() or "medium"
-        if quality not in ["low", "medium", "high"]:
-            print("⚠️  Invalid quality! Defaulting to medium.")
-            quality = "medium"
+        # Quality selection based on file type
+        if file_type == "mp3":
+            print("\n🔊 Select audio quality:")
+            print("   1. 64 kbps")
+            print("   2. 128 kbps (Recommended)")
+            print("   3. 192 kbps")
+            print("   4. 320 kbps (Highest)")
+            while True:
+                choice = input("Enter your choice (1-4, default: 2): ").strip() or "2"
+                if choice == "1":
+                    quality = "64"
+                    break
+                elif choice == "2":
+                    quality = "128"
+                    break
+                elif choice == "3":
+                    quality = "192"
+                    break
+                elif choice == "4":
+                    quality = "320"
+                    break
+                print("⚠️  Invalid choice! Please enter 1, 2, 3, or 4.")
+        else:  # mp4
+            print("\n🎬 Select video resolution:")
+            print("   1. 144p")
+            print("   2. 240p")
+            print("   3. 360p")
+            print("   4. 480p")
+            print("   5. 720p (HD - Recommended)")
+            print("   6. 1080p (Full HD)")
+            print("   7. 1440p (2K)")
+            print("   8. 2160p (4K)")
+            while True:
+                choice = input("Enter your choice (1-8, default: 5): ").strip() or "5"
+                if choice == "1":
+                    quality = "144"
+                    break
+                elif choice == "2":
+                    quality = "240"
+                    break
+                elif choice == "3":
+                    quality = "360"
+                    break
+                elif choice == "4":
+                    quality = "480"
+                    break
+                elif choice == "5":
+                    quality = "720"
+                    break
+                elif choice == "6":
+                    quality = "1080"
+                    break
+                elif choice == "7":
+                    quality = "1440"
+                    break
+                elif choice == "8":
+                    quality = "2160"
+                    break
+                print("⚠️  Invalid choice! Please enter 1-8.")
 
         print("\n" + "=" * 60)
         download_media(url, file_type, quality, is_playlist)
@@ -242,8 +450,10 @@ if __name__ == "__main__":
         
         # Ask if user wants to download another video
         print("\n🔄 Download another video?")
-        another = input("Enter 'yes' to continue or press Enter to exit: ").strip().lower()
-        if another != "yes":
+        print("   1. Yes")
+        print("   2. No (Exit)")
+        another = input("Enter your choice (1-2): ").strip()
+        if another != "1":
             print("\n👋 Thanks for using QuickTube!")
             print("=" * 60)
             break
