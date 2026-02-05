@@ -79,13 +79,14 @@ jobs:
       - name: Download and setup ffmpeg (macOS)
         if: runner.os == 'macOS'
         run: |
-          # Use evermeet.cx for macOS ffmpeg (supports both Intel and ARM)
           ARCH=$(uname -m)
           if [ "$ARCH" = "arm64" ]; then
             # For ARM64, use static build from osxexperts
             curl -L "https://www.osxexperts.net/ffmpeg7arm.zip" -o ffmpeg.zip
             unzip -q ffmpeg.zip
-            mv ffmpeg7arm ffmpeg
+            # Find and move the ffmpeg binary (handle different possible structures)
+            find . -name "ffmpeg" -type f -perm +111 2>/dev/null | head -1 | xargs -I {} mv {} ffmpeg || \
+            find . -name "ffmpeg" -type f -executable 2>/dev/null | head -1 | xargs -I {} mv {} ffmpeg
           else
             # For Intel, use evermeet.cx
             curl -L "https://evermeet.cx/ffmpeg/getrelease/zip" -o ffmpeg.zip
