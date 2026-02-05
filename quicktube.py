@@ -345,7 +345,7 @@ def download_media(video_url, file_type, quality, is_playlist):
         print("   1. Yes (full conversion - slower, may fix playback issues)")
         print("   2. Yes (quick copy - instant, same quality)")
         print("   3. No")
-        convert_choice = input("Enter your choice (1-3): ").strip().lower()
+        convert_choice = input("Enter your choice (1-3, default: 3): ").strip().lower() or "3"
         if convert_choice in ["1", "2", "yes", "y", "full", "quick", "copy"]:
             # Determine conversion type
             if convert_choice in ["2", "quick", "copy"]:
@@ -419,7 +419,7 @@ if __name__ == "__main__":
         print("   1. MP3 (Audio only)")
         print("   2. MP4 (Video)")
         while True:
-            choice = input("Enter your choice (1-2): ").strip().lower()
+            choice = input("Enter your choice (1-2, default: 2): ").strip().lower() or "2"
             if choice in ["1", "mp3", "audio"]:
                 file_type = "mp3"
                 break
