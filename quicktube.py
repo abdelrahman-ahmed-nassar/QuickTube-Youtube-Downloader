@@ -220,6 +220,38 @@ def download_media(video_url, file_type, quality, is_playlist):
     audio_quality_map = {"64": "64K", "128": "128K", "192": "192K", "320": "320K"}
     video_quality_map = {"144": "144", "240": "240", "360": "360", "480": "480", "720": "720", "1080": "1080", "1440": "1440", "2160": "2160"}
 
+    # Store the base output directory as fallback
+    base_output_dir = output_dir
+    
+    # Try to create subdirectory based on file type
+    if file_type == "mp3":
+        output_dir = os.path.join(output_dir, "mp3")
+    elif file_type == "mp4":
+        output_dir = os.path.join(output_dir, "mp4")
+    
+    # Try to create the subdirectory
+    try:
+        os.makedirs(output_dir, exist_ok=True)
+    except (OSError, PermissionError) as e:
+        # Fallback to base output directory
+        print(f"\n⚠️  Could not create subfolder: {output_dir}")
+        print(f"    Falling back to: {base_output_dir}")
+        output_dir = base_output_dir
+        try:
+            os.makedirs(output_dir, exist_ok=True)
+        except (OSError, PermissionError) as e2:
+            print("\n" + "="*60)
+            print("❌ ERROR: Cannot create output folder")
+            print("="*60)
+            print(f"\n⚠️  Could not create folder: {output_dir}")
+            print(f"\n💡 Error: {e2}")
+            print("\n📋 SOLUTION:")
+            print("   1. Check folder permissions")
+            print("   2. Try running from a different location\n")
+            print("="*60 + "\n")
+            input("Press Enter to exit...")
+            sys.exit(1)
+
     # Filename template uses YouTube video title and extension
     filename = os.path.join(output_dir, "%(title)s.%(ext)s")
     
