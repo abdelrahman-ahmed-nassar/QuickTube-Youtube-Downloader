@@ -34,7 +34,7 @@ def probe_url_with_ytdlp(url):
         import json
         # Use --dump-single-json to get metadata without downloading
         result = subprocess.run(
-            [ytdlp_cmd, "--dump-single-json", "--no-warnings", "--no-playlist", url],
+            [ytdlp_cmd, "--dump-single-json", "--no-warnings", "--no-check-certificate", "--no-playlist", url],
             capture_output=True,
             text=True,
             timeout=20
@@ -53,7 +53,7 @@ def check_if_playlist(url):
         import json
         # Probe with playlist support to detect if it's a playlist
         result = subprocess.run(
-            [ytdlp_cmd, "--dump-single-json", "--no-warnings", "--yes-playlist", url],
+            [ytdlp_cmd, "--dump-single-json", "--no-warnings", "--no-check-certificate", "--yes-playlist", url],
             capture_output=True,
             text=True,
             timeout=20
