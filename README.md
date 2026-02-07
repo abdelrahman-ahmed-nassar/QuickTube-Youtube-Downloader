@@ -1,6 +1,6 @@
 # ⚡ QuickTube
 
-**The fastest way to download YouTube videos and audio - no installation required!**
+**The fastest way to download videos and audio from YouTube, Facebook, LinkedIn, and X - no installation required!**
 
 [![Download Releases](https://img.shields.io/github/v/release/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader?label=Download&style=for-the-badge)](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest)
 [![Platform Support](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=for-the-badge)]()
@@ -11,7 +11,8 @@
 
 1. **[Download the executable](https://github.com/abdelrahman-ahmed-nassar/QuickTube-Youtube-Downloader/releases/latest)** for your platform
 2. **Run it** (double-click or run in terminal)
-3. **Paste a YouTube URL** and start downloading!
+3. **Select your platform** (YouTube, Facebook, LinkedIn, or X)
+4. **Paste a video URL** and start downloading!
 
 **That's it!** No Python, no dependencies, no setup. Everything is bundled.
 
@@ -55,16 +56,16 @@
 
 ## ✨ Features
 
-- 🎬 **Download YouTube videos** in MP4 format (360p, 720p, 1080p)
-- 🎵 **Extract audio** in MP3 format (50kbps, 128kbps, 192kbps)
+- 🌐 **Multi-platform support** - YouTube, Facebook, LinkedIn, and X (Twitter)
+- 🎬 **Download videos** in MP4 format (144p to 4K)
+- 🎵 **Extract audio** in MP3 format (64kbps to 320kbps)
 - 📋 **Playlist support** - download entire playlists or single videos
-- 🔄 **Format conversion** - convert between MP4 and MKV formats
+- 🔄 **Format conversion** - convert between MP4 and MKV formats (full or quick remux)
 - 📊 **Real-time progress** - see download and conversion progress
-- 🎯 **QuickTime compatible** - works on all Apple devices and players
-- 🌐 **Universal compatibility** - plays on VLC, Windows Media Player, and all modern devices
+- 🎯 **Universal compatibility** - works on all devices and players
 - 🎨 **Beautiful UI** - emoji feedback and clear status messages
-- 🔒 **SSL handling** - automatic certificate management
-- 📁 **Organized output** - all downloads saved to `output/` folder
+- 🔒 **Smart URL handling** - automatically handles tracking parameters
+- 📁 **Organized output** - downloads saved to organized folders (output/mp3, output/mp4)
 
 ---
 
@@ -74,55 +75,86 @@ Simply run the executable and follow the interactive prompts:
 
 ```
 ============================================================
-🎵 YouTube Media Downloader 🎵
+⚡ QuickTube - Universal Media Downloader ⚡
 ============================================================
+
+🌐 Select platform:
+   1. YouTube (default)
+   2. Facebook
+   3. LinkedIn
+   4. X (Twitter)
+Enter your choice (1-4) or press Enter for YouTube: 1
 
 📎 Enter YouTube URL: https://www.youtube.com/watch?v=example
-📁 Enter file type (mp3/mp4): mp4
 
-🔊 Choose quality: low, medium, high
-Enter quality (default: medium): high
+🔍 Checking URL...
+✅ Supported! Found: Example Video Title...
+
+📁 Select file type:
+   1. MP3 (Audio only)
+   2. MP4 (Video)
+Enter your choice (1-2, default: 2): 2
+
+🎬 Select video resolution:
+   1. 144p
+   2. 240p
+   3. 360p
+   4. 480p
+   5. 720p (HD - Recommended)
+   6. 1080p (Full HD)
+   7. 1440p (2K)
+   8. 2160p (4K)
+Enter your choice (1-8, default: 5): 6
 
 ============================================================
-⏳ Downloading MP4 (HIGH quality)...
+⏳ Downloading MP4 (1080p)...
 [Download progress shown here]
 ============================================================
-🎉 Successfully downloaded MP4: video-title.mp4
-📁 Saved to: /path/to/output/video-title.mp4
+🎉 Successfully downloaded MP4: Example Video Title.mp4
+📁 Saved to: /path/to/output/mp4/Example Video Title.mp4
 ```
 
 ### What You Can Download
 
-- **Single videos** - just paste the video URL
-- **Playlists** - paste playlist URL and choose to download all or single video
-- **MP3 audio** - extract audio only in high quality
-- **MP4 videos** - download videos with audio included
+- **YouTube** - Videos, playlists, shorts, music
+- **Facebook** - Public video posts
+- **LinkedIn** - Public video posts and articles
+- **X (Twitter)** - Public video posts and tweets
+- **Playlists/Collections** - Download entire playlists or single items
+- **MP3 audio** - Extract audio only in high quality (64-320 kbps)
+- **MP4 videos** - Download videos with audio included (144p-4K)
 
 ### Quality Options
 
 **Video (MP4):**
 
-- `low` - 360p (small file size)
-- `medium` - 720p HD (balanced)
-- `high` - 1080p Full HD (best quality)
+- `144p` - Lowest quality (minimal file size)
+- `240p` - Low quality
+- `360p` - Standard quality
+- `480p` - Enhanced quality
+- `720p` - HD (recommended, balanced)
+- `1080p` - Full HD (high quality)
+- `1440p` - 2K (very high quality)
+- `2160p` - 4K (best quality, largest file)
 
 **Audio (MP3):**
 
-- `low` - 50kbps (minimal file size)
-- `medium` - 128kbps (good quality)
-- `high` - 192kbps (excellent quality)
+- `64 kbps` - Low quality (minimal file size)
+- `128 kbps` - Good quality (recommended)
+- `192 kbps` - High quality
+- `320 kbps` - Highest quality (best audio)
 
 ---
 
 ## 📂 Output Location
 
-All downloads are saved to the `output/` folder:
+All downloads are saved to the `output/` folder with organized subfolders:
 
-- **Windows:** `C:\path\to\executable\output\`
-- **macOS:** `output/` folder created next to `QuickTube.app` (e.g., if the app is on Desktop, output folder appears on Desktop)
-- **Linux:** `/path/to/executable/output/`
+- **Windows:** `C:\path\to\executable\output\mp3\` and `output\mp4\`
+- **macOS:** `output/mp3/` and `output/mp4/` folders created next to `QuickTube.app`
+- **Linux:** `/path/to/executable/output/mp3/` and `output/mp4/`
 
-Files are named automatically based on the YouTube video title.
+Files are named automatically based on the video title.
 
 ---
 
@@ -186,9 +218,13 @@ chmod +x quicktube-linux
 ### Slow Downloads or Errors
 
 - **Check your internet connection**
+- **Update yt-dlp** - Run: `pip install --upgrade yt-dlp` (if using manual installation)
 - **Try a different video** - some videos may be restricted in your region
-- **Age-restricted videos** may not download
-- **Private videos** cannot be accessed
+- **Private/Age-restricted videos** may not download
+- **Platform-specific issues:**
+  - Facebook: Ensure video is public
+  - LinkedIn: Requires public post access
+  - X/Twitter: May have rate limiting
 
 ### No Progress Display
 
@@ -238,7 +274,7 @@ If you find this tool useful, please:
 
 ## ⚠️ Disclaimer
 
-This tool is for personal use only. Please respect YouTube's Terms of Service and copyright laws. Only download content you have permission to download.
+This tool is for personal use only. Please respect the Terms of Service and copyright laws of each platform (YouTube, Facebook, LinkedIn, X). Only download content you have permission to download.
 
 ---
 

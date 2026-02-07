@@ -27,23 +27,51 @@ def get_ytdlp_path():
     # Fall back to system yt-dlp
     return "yt-dlp"
 
+def probe_url_with_ytdlp(url):
+    """Check if yt-dlp can extract the URL and get basic info."""
+    ytdlp_cmd = get_ytdlp_path()
+    try:
+        import json
+        # Use --dump-single-json to get metadata without downloading
+        result = subprocess.run(
+            [ytdlp_cmd, "--dump-single-json", "--no-warnings", "--no-playlist", url],
+            capture_output=True,
+            text=True,
+            timeout=20
+        )
+        if result.returncode == 0:
+            info = json.loads(result.stdout)
+            return True, info
+        return False, None
+    except Exception:
+        return False, None
+
+def check_if_playlist(url):
+    """Check if URL is a playlist by probing with yt-dlp."""
+    ytdlp_cmd = get_ytdlp_path()
+    try:
+        import json
+        # Probe with playlist support to detect if it's a playlist
+        result = subprocess.run(
+            [ytdlp_cmd, "--dump-single-json", "--no-warnings", "--yes-playlist", url],
+            capture_output=True,
+            text=True,
+            timeout=20
+        )
+        if result.returncode == 0:
+            info = json.loads(result.stdout)
+            # Check if it's a playlist type or has multiple entries
+            return info.get('_type') == 'playlist' or 'entries' in info
+        return False
+    except Exception:
+        return False
+
 def extract_video_url(playlist_url):
-    """Extracts the single video URL from a playlist URL."""
+    """Extracts the single video URL from a playlist URL (YouTube-specific fallback)."""
     match = re.search(r"v=([a-zA-Z0-9_-]+)", playlist_url)
     if match:
         return f"https://www.youtube.com/watch?v={match.group(1)}"
     return playlist_url
-
-def validate_youtube_url(url):
-    """Validates if the URL is a valid YouTube URL."""
-    youtube_patterns = [
-        r'(https?://)?(www\.)?youtube\.com/watch\?v=',
-        r'(https?://)?(www\.)?youtube\.com/playlist\?list=',
-        r'(https?://)?(www\.)?youtube\.com/shorts/',
-        r'(https?://)?(www\.)?youtu\.be/',
-        r'(https?://)?(music\.)?youtube\.com/',
-    ]
-    return any(re.match(pattern, url) for pattern in youtube_patterns)
 
 def sanitize_filename(filename):
     """Remove or replace characters that cause issues on various filesystems."""
@@ -285,12 +313,12 @@ def download_media(video_url, file_type, quality, is_playlist):
         command += ["-x", "--audio-format", "mp3", "--audio-quality", bitrate]
     elif file_type == "mp4":
         resolution = video_quality_map.get(quality, "720")
-        # IMPROVED FORMAT SELECTION:
-        # 1. First try: pre-merged mp4 with video+audio (no separate download/merge needed)
-        # 2. Second try: best video + audio that need merging
-        # This reduces bandwidth by preferring already-combined formats
+        # IMPROVED FORMAT SELECTION with fallback for platforms with limited formats:
+        # 1. Try: best format at or below requested resolution
+        # 2. Fallback: best available format if exact resolution not available
+        # 3. Always prefer mp4 container when possible
         command += [
-            "-f", f"best[height<={resolution}][ext=mp4]/bestvideo[height<={resolution}]+bestaudio/best[height<={resolution}]",
+            "-f", f"best[height<={resolution}][ext=mp4]/best[height<={resolution}]/bestvideo[height<={resolution}]+bestaudio/best",
             "--merge-output-format", "mp4",
             # Use lightweight ffmpeg settings for merging to reduce CPU/heat
             "--postprocessor-args", f"ffmpeg:-threads {thread_count} -preset ultrafast -movflags +faststart"
@@ -385,34 +413,57 @@ def download_media(video_url, file_type, quality, is_playlist):
 if __name__ == "__main__":
     while True:
         print("=" * 60)
-        print("⚡ QuickTube - Fast YouTube Downloader ⚡")
+        print("⚡ QuickTube - Universal Media Downloader ⚡")
         print("=" * 60)
         
-        url = input("\n📎 Enter YouTube URL: ").strip()
+        # Platform selection
+        print("\n🌐 Select platform:")
+        print("   1. YouTube (default)")
+        print("   2. Facebook")
+        print("   3. LinkedIn")
+        print("   4. X (Twitter)")
+        platform_choice = input("Enter your choice (1-4) or press Enter for YouTube: ").strip().lower() or "1"
+        
+        platform_names = {
+            "1": "YouTube", "youtube": "YouTube",
+            "2": "Facebook", "facebook": "Facebook", "fb": "Facebook",
+            "3": "LinkedIn", "linkedin": "LinkedIn",
+            "4": "X/Twitter", "x": "X/Twitter", "twitter": "X/Twitter"
+        }
+        platform_name = platform_names.get(platform_choice, "YouTube")
+        
+        url = input(f"\n📎 Enter {platform_name} URL: ").strip()
         
         # Validate URL
         if not url:
             print("⚠️  No URL entered. Please try again.")
             continue
         
-        if not validate_youtube_url(url):
-            print("⚠️  Invalid YouTube URL. Please enter a valid YouTube link.")
-            print("   Supported formats:")
-            print("   • youtube.com/watch?v=...")
-            print("   • youtu.be/...")
-            print("   • youtube.com/playlist?list=...")
-            print("   • youtube.com/shorts/...")
+        # Probe if yt-dlp supports this URL
+        print("\n🔍 Checking URL...")
+        is_supported, info = probe_url_with_ytdlp(url)
+        
+        if not is_supported:
+            print(f"⚠️  Unable to extract media from this URL.")
+            print("   Make sure:")
+            print("   • The URL is correct and accessible")
+            print("   • The video/post is public (not private)")
+            print("   • yt-dlp is up to date: pip install --upgrade yt-dlp")
             continue
+        
+        print(f"✅ Supported! Found: {info.get('title', 'media')[:50]}...")
 
-        # Check if the URL contains a playlist
-        is_playlist = "list=" in url
+        # Check if the URL is a playlist
+        is_playlist = check_if_playlist(url)
         if is_playlist:
-            print("\n📦 This is a playlist. What would you like to do?")
+            print("\n📦 This is a playlist/collection. What would you like to do?")
             print("   1. Download entire playlist")
-            print("   2. Download single video only")
+            print("   2. Download single item only")
             choice = input("Enter your choice (1-2): ").strip().lower()
-            if choice in ["2", "single", "video", "one"]:
-                url = extract_video_url(url)
+            if choice in ["2", "single", "video", "one", "item"]:
+                # For YouTube playlists, try to extract single video
+                if "youtube.com" in url or "youtu.be" in url:
+                    url = extract_video_url(url)
                 is_playlist = False
 
         print("\n📁 Select file type:")
