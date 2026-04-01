@@ -438,20 +438,6 @@ if __name__ == "__main__":
         if not url:
             print("⚠️  No URL entered. Please try again.")
             continue
-        
-        # Probe if yt-dlp supports this URL
-        print("\n🔍 Checking URL...")
-        is_supported, info = probe_url_with_ytdlp(url)
-        
-        if not is_supported:
-            print(f"⚠️  Unable to extract media from this URL.")
-            print("   Make sure:")
-            print("   • The URL is correct and accessible")
-            print("   • The video/post is public (not private)")
-            print("   • yt-dlp is up to date: pip install --upgrade yt-dlp")
-            continue
-        
-        print(f"✅ Supported! Found: {info.get('title', 'media')[:50]}...")
 
         # Check if the URL is a playlist
         is_playlist = check_if_playlist(url)
