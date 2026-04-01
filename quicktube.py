@@ -452,78 +452,96 @@ if __name__ == "__main__":
                     url = extract_video_url(url)
                 is_playlist = False
 
-        print("\n📁 Select file type:")
-        print("   1. MP3 (Audio only)")
-        print("   2. MP4 (Video)")
+        # File type + quality selection with back mode
         while True:
+            print("\n📁 Select file type:")
+            print("   1. MP3 (Audio only)")
+            print("   2. MP4 (Video)")
             choice = input("Enter your choice (1-2, default: 2): ").strip().lower() or "2"
             if choice in ["1", "mp3", "audio"]:
                 file_type = "mp3"
-                break
             elif choice in ["2", "mp4", "video"]:
                 file_type = "mp4"
-                break
-            print("⚠️  Invalid choice! Please enter 1, 2, or type 'mp3'/'mp4'.")
+            else:
+                print("⚠️  Invalid choice! Please enter 1, 2, or type 'mp3'/'mp4'.")
+                continue
 
-        # Quality selection based on file type
-        if file_type == "mp3":
-            print("\n🔊 Select audio quality:")
-            print("   1. 64 kbps")
-            print("   2. 128 kbps (Recommended)")
-            print("   3. 192 kbps")
-            print("   4. 320 kbps (Highest)")
-            while True:
-                choice = input("Enter your choice (1-4, default: 2): ").strip().lower() or "2"
-                if choice in ["1", "64"]:
-                    quality = "64"
-                    break
-                elif choice in ["2", "128"]:
-                    quality = "128"
-                    break
-                elif choice in ["3", "192"]:
-                    quality = "192"
-                    break
-                elif choice in ["4", "320"]:
-                    quality = "320"
-                    break
-                print("⚠️  Invalid choice! Please enter 1-4 or the bitrate (64/128/192/320).")
-        else:  # mp4
-            print("\n🎬 Select video resolution:")
-            print("   1. 144p")
-            print("   2. 240p")
-            print("   3. 360p")
-            print("   4. 480p")
-            print("   5. 720p (HD - Recommended)")
-            print("   6. 1080p (Full HD)")
-            print("   7. 1440p (2K)")
-            print("   8. 2160p (4K)")
-            while True:
-                choice = input("Enter your choice (1-8, default: 5): ").strip().lower().replace('p', '') or "5"
-                if choice in ["1", "144"]:
-                    quality = "144"
-                    break
-                elif choice in ["2", "240"]:
-                    quality = "240"
-                    break
-                elif choice in ["3", "360"]:
-                    quality = "360"
-                    break
-                elif choice in ["4", "480"]:
-                    quality = "480"
-                    break
-                elif choice in ["5", "720", "hd"]:
-                    quality = "720"
-                    break
-                elif choice in ["6", "1080", "fullhd", "full hd"]:
-                    quality = "1080"
-                    break
-                elif choice in ["7", "1440", "2k"]:
-                    quality = "1440"
-                    break
-                elif choice in ["8", "2160", "4k"]:
-                    quality = "2160"
-                    break
-                print("⚠️  Invalid choice! Please enter 1-8 or resolution (144/240/360/480/720/1080/1440/2160).")
+            go_back = False
+
+            if file_type == "mp3":
+                print("\n🔊 Select audio quality:")
+                print("   1. 64 kbps")
+                print("   2. 128 kbps (Recommended)")
+                print("   3. 192 kbps")
+                print("   4. 320 kbps (Highest)")
+                print("   B. Back to file type")
+                while True:
+                    choice = input("Enter your choice (1-4, default: 2, or B to go back): ").strip().lower() or "2"
+                    if choice in ["b", "back"]:
+                        go_back = True
+                        break
+                    if choice in ["1", "64"]:
+                        quality = "64"
+                        break
+                    elif choice in ["2", "128"]:
+                        quality = "128"
+                        break
+                    elif choice in ["3", "192"]:
+                        quality = "192"
+                        break
+                    elif choice in ["4", "320"]:
+                        quality = "320"
+                        break
+                    print("⚠️  Invalid choice! Please enter 1-4, bitrate (64/128/192/320), or B.")
+            else:  # mp4
+                print("\n🎬 Select video resolution:")
+                print("   1. 144p")
+                print("   2. 240p")
+                print("   3. 360p")
+                print("   4. 480p")
+                print("   5. 720p (HD - Recommended)")
+                print("   6. 1080p (Full HD)")
+                print("   7. 1440p (2K)")
+                print("   8. 2160p (4K)")
+                print("   B. Back to file type")
+                while True:
+                    choice = input("Enter your choice (1-8, default: 5, or B to go back): ").strip().lower()
+                    if not choice:
+                        choice = "5"
+                    if choice in ["b", "back"]:
+                        go_back = True
+                        break
+                    choice = choice.replace('p', '')
+                    if choice in ["1", "144"]:
+                        quality = "144"
+                        break
+                    elif choice in ["2", "240"]:
+                        quality = "240"
+                        break
+                    elif choice in ["3", "360"]:
+                        quality = "360"
+                        break
+                    elif choice in ["4", "480"]:
+                        quality = "480"
+                        break
+                    elif choice in ["5", "720", "hd"]:
+                        quality = "720"
+                        break
+                    elif choice in ["6", "1080", "fullhd", "full hd"]:
+                        quality = "1080"
+                        break
+                    elif choice in ["7", "1440", "2k"]:
+                        quality = "1440"
+                        break
+                    elif choice in ["8", "2160", "4k"]:
+                        quality = "2160"
+                        break
+                    print("⚠️  Invalid choice! Please enter 1-8, resolution (144/240/360/480/720/1080/1440/2160), or B.")
+
+            if go_back:
+                continue
+
+            break
 
         print("\n" + "=" * 60)
         download_media(url, file_type, quality, is_playlist)
