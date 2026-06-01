@@ -2,6 +2,10 @@ import subprocess
 import os
 import re
 import sys
+import shlex
+
+
+DEBUG_MODE = "--debug" in sys.argv or os.getenv("QUICKTUBE_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"}
 
 def get_ffmpeg_path():
     """Get the path to ffmpeg binary (bundled or system)"""
@@ -26,25 +30,6 @@ def get_ytdlp_path():
             return bundled_ytdlp
     # Fall back to system yt-dlp
     return "yt-dlp"
-
-def probe_url_with_ytdlp(url):
-    """Check if yt-dlp can extract the URL and get basic info."""
-    ytdlp_cmd = get_ytdlp_path()
-    try:
-        import json
-        # Use --dump-single-json to get metadata without downloading
-        result = subprocess.run(
-            [ytdlp_cmd, "--dump-single-json", "--no-warnings", "--no-check-certificate", "--no-playlist", url],
-            capture_output=True,
-            text=True,
-            timeout=20
-        )
-        if result.returncode == 0:
-            info = json.loads(result.stdout)
-            return True, info
-        return False, None
-    except Exception:
-        return False, None
 
 def check_if_playlist(url):
     """Check if URL is a playlist by probing with yt-dlp."""
@@ -73,14 +58,6 @@ def extract_video_url(playlist_url):
         return f"https://www.youtube.com/watch?v={match.group(1)}"
     return playlist_url
 
-def sanitize_filename(filename):
-    """Remove or replace characters that cause issues on various filesystems."""
-    # Characters that are problematic on Windows/macOS/Linux
-    invalid_chars = '<>:"/\\|?*'
-    for char in invalid_chars:
-        filename = filename.replace(char, '_')
-    return filename
-
 def get_cpu_thread_count():
     """Get optimal thread count for encoding (use half of available cores to prevent overheating)"""
     try:
@@ -90,6 +67,14 @@ def get_cpu_thread_count():
         return str(max(1, min(cores // 2, 4)))
     except:
         return "2"  # Safe default
+
+
+def format_command(command):
+    """Format a command for readable debug output."""
+    try:
+        return shlex.join(command)
+    except AttributeError:
+        return " ".join(shlex.quote(arg) for arg in command)
 
 def convert_video(input_file, target_format):
     """Converts the video to the specified format using H.264 for video and AAC for audio.
@@ -245,7 +230,7 @@ def download_media(video_url, file_type, quality, is_playlist):
         sys.exit(1)
 
     # Quality is now the actual resolution/bitrate value
-    audio_quality_map = {"64": "64K", "128": "128K", "192": "192K", "320": "320K"}
+    audio_quality_map = {"64": "64k", "128": "128k", "192": "192k", "320": "320k"}
     video_quality_map = {"144": "144", "240": "240", "360": "360", "480": "480", "720": "720", "1080": "1080", "1440": "1440", "2160": "2160"}
 
     # Store the base output directory as fallback
@@ -314,14 +299,16 @@ def download_media(video_url, file_type, quality, is_playlist):
     elif file_type == "mp4":
         resolution = video_quality_map.get(quality, "720")
         # IMPROVED FORMAT SELECTION with fallback for platforms with limited formats:
-        # 1. Try: best format at or below requested resolution
-        # 2. Fallback: best available format if exact resolution not available
-        # 3. Always prefer mp4 container when possible
+        # 1. Prefer split video/audio streams at or below the requested resolution
+        # 2. Fall back to combined mp4 if needed
+        # 3. Use any available format only as a last resort
         command += [
-            "-f", f"best[height<={resolution}][ext=mp4]/best[height<={resolution}]/bestvideo[height<={resolution}]+bestaudio/best",
+            "-f", (
+                f"bestvideo[height<={resolution}]+140/"
+                f"bestvideo[height<={resolution}]+bestaudio[ext=m4a]/"
+                f"bestvideo[height<={resolution}]+bestaudio"
+            ),
             "--merge-output-format", "mp4",
-            # Use lightweight ffmpeg settings for merging to reduce CPU/heat
-            "--postprocessor-args", f"ffmpeg:-threads {thread_count} -preset ultrafast -movflags +faststart"
         ]
 
     if not is_playlist:
@@ -332,6 +319,10 @@ def download_media(video_url, file_type, quality, is_playlist):
     
     # Display quality in user-friendly format
     quality_display = f"{quality}p" if file_type == "mp4" else f"{quality} kbps"
+
+    if DEBUG_MODE:
+        print("\n🐛 Debug mode: yt-dlp command")
+        print(format_command(command))
     
     print(f"\n⏳ Downloading {file_type.upper()} ({quality_display})...")
     print("=" * 60)
@@ -438,6 +429,8 @@ if __name__ == "__main__":
         if not url:
             print("⚠️  No URL entered. Please try again.")
             continue
+
+        print("\n🔎 Checking the link... this may take a few seconds.", flush=True)
 
         # Check if the URL is a playlist
         is_playlist = check_if_playlist(url)
